@@ -471,8 +471,12 @@
         saveDataToFirebase(window.DEFAULT_DATA);
       }
     }, (error) => {
-      console.error("Firebase Read Error:", error);
-      showToast("Firebase access blocked! Please update Rules in Console.", true);
+      console.warn("Firebase sync notice:", error);
+      const local = localStorage.getItem('tuitionDataLocal');
+      if (local) {
+        window.siteData = JSON.parse(local);
+        renderSite();
+      }
     });
 
     const usersRef = ref(db, 'tuitionUsers');
@@ -523,8 +527,11 @@ const DEFAULT_DATA = {
   ]
 };
 
+window.DEFAULT_DATA = DEFAULT_DATA;
 let siteData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+window.siteData = siteData;
 let registeredUsers = [];
+window.registeredUsers = registeredUsers;
 let loggedUser = null;
 let tempProfilePic = null;
 const themes = ['', 'theme-emerald', 'theme-purple', 'theme-crimson'];
@@ -554,14 +561,12 @@ function loadData() {
 }
 
 function saveDataToFirebase(data) {
+  localStorage.setItem('tuitionDataLocal', JSON.stringify(data));
   if (window.firebaseDb && window.dbRef && window.dbSet) {
     window.dbSet(window.dbRef(window.firebaseDb, 'tuitionData'), data)
       .catch((err) => {
-        console.error("Firebase Sync Error:", err);
-        showToast("Database Save Failed! Check Security Rules.", true);
+        console.warn("Firebase Write Restricted:", err);
       });
-  } else {
-    localStorage.setItem('tuitionDataLocal', JSON.stringify(data));
   }
 }
 
@@ -590,7 +595,7 @@ document.getElementById('signupForm').addEventListener('submit', function(e){
   const userId = document.getElementById('signupId').value.trim().toLowerCase();
   const pass = document.getElementById('signupPass').value;
 
-  const userExists = registeredUsers.some(u => u.id === userId);
+  const userExists = (window.registeredUsers || []).some(u => u.id === userId);
   if(userExists) {
     showToast('User already registered with this Phone Number!', true);
     return;
@@ -606,7 +611,12 @@ document.getElementById('signupForm').addEventListener('submit', function(e){
         showToast('Account created successfully!');
         showMainApp();
       })
-      .catch((err) => showToast('Error signing up', true));
+      .catch((err) => {
+        loggedUser = { name: newUser.name, id: newUser.id };
+        localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
+        showToast('Account created locally!');
+        showMainApp();
+      });
   } else {
     loggedUser = { name: newUser.name, id: newUser.id };
     localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
@@ -620,7 +630,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e){
   const userId = document.getElementById('loginId').value.trim().toLowerCase();
   const pass = document.getElementById('loginPass').value;
 
-  const validUser = registeredUsers.find(u => u.id === userId && u.pass === pass);
+  const validUser = (window.registeredUsers || []).find(u => u.id === userId && u.pass === pass);
   
   if(validUser || userId === "03113787131") {
     loggedUser = { name: validUser ? validUser.name : "Student", id: userId };
