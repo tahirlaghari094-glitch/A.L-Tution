@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="ur" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Araiz Ahmed — Home & Online Private Tuition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #0D1B2A;
+    --primary-light: #1B263B;
+    --accent: #E0A96D;
+    --accent-glow: rgba(224, 169, 109, 0.3);
+    --bg: #FAF8F5;
+    --card-bg: #FFFFFF;
+    --text: #212529;
+    --text-muted: #4A5568;
+    --line: rgba(13, 27, 42, 0.1);
+    --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
+    --radius: 16px;
+    --danger: #E53E3E;
+  }
+
+  body.theme-emerald { --primary: #064E3B; --primary-light: #047857; --accent: #34D399; --accent-glow: rgba(52, 211, 153, 0.3); }
+  body.theme-purple { --primary: #3B0764; --primary-light: #6B21A8; --accent: #C084FC; --accent-glow: rgba(192, 132, 252, 0.3); }
+  body.theme-crimson { --primary: #4C0519; --primary-light: #881337; --accent: #FB7185; --accent-glow: rgba(251, 113, 133, 0.3); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+  h1, h2, h3 { font-family: 'Fraunces', serif; color: var(--primary); }
+  a { text-decoration: none; color: inherit; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+  #allSubjectsCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; }
+  .notice-bar { background: var(--accent); color: var(--primary); font-weight: 600; text-align: center; padding: 8px 16px; font-size: 0.88rem; display: none; position: relative; z-index: 101; }
+
+  .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+  .toast { background: var(--primary); color: #fff; padding: 14px 22px; border-radius: 12px; font-size: 0.9rem; font-weight: 500; box-shadow: var(--shadow-3d); border-left: 5px solid var(--accent); opacity: 0; transform: translateY(20px); transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.error { border-left-color: var(--danger); }
+
+  #authScreen { position: fixed; inset: 0; z-index: 999; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .auth-card { background: var(--card-bg); width: 100%; max-width: 440px; padding: 36px; border-radius: var(--radius); box-shadow: var(--shadow-3d); border: 1px solid var(--line); text-align: center; }
+  .auth-tabs { display: flex; gap: 8px; margin-bottom: 24px; background: rgba(0,0,0,0.04); padding: 4px; border-radius: 30px; }
+  .auth-tab { flex: 1; padding: 10px; border: none; background: none; font-weight: 600; cursor: pointer; border-radius: 20px; transition: all 0.3s; }
+  .auth-tab.active { background: var(--primary); color: #fff; }
+
+  #appScreen { display: none; }
+
+  header { position: sticky; top: 0; z-index: 100; background: rgba(250, 248, 245, 0.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; gap: 12px; position: relative; }
+  .logo { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.3rem; color: var(--primary); display: flex; align-items: center; gap: 12px; }
+  
+  .logo-img-container { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; background: var(--primary); display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent); flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.12); }
+  .logo-img-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .logo-img-container .mark { color: var(--accent); font-weight: 700; font-size: 1.15rem; }
+  
+  .nav-links { display: flex; gap: 6px; background: rgba(0,0,0,0.03); padding: 4px; border-radius: 30px; border: 1px solid var(--line); align-items: center; }
+  .nav-links a { padding: 8px 16px; border-radius: 20px; font-size: 0.88rem; font-weight: 500; color: var(--text-muted); transition: all 0.3s ease; }
+  .nav-links a.active { background: var(--primary); color: #fff; font-weight: 600; }
+  
+  .right-corner-group { display: flex; align-items: center; gap: 10px; margin-left: auto; position: relative; }
+  .admin-top-btn { background: var(--primary); color: var(--accent); border: 1px solid var(--accent); padding: 7px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 5px; }
+  .admin-top-btn:hover { background: var(--primary-light); }
+
+  .hamburger { display: none; font-size: 1.5rem; background: var(--card-bg); border: 1px solid var(--line); cursor: pointer; color: var(--primary); width: 38px; height: 38px; border-radius: 50%; align-items: center; justify-content: center; transition: all 0.2s; }
+  .hamburger:hover { background: var(--accent-glow); }
+
+  .nav-controls { display: flex; gap: 10px; align-items: center; }
+  .theme-btn { background: var(--card-bg); border: 1px solid var(--line); width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+  
+  .user-badge { font-size: 0.85rem; font-weight: 700; background: var(--accent-glow); color: var(--primary); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--accent); display: flex; align-items: center; gap: 6px; }
+  
+  .logout-btn { background: var(--danger); color: white; border: none; padding: 7px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+  .logout-btn:hover { background: #C53030; }
+
+  @media (max-width: 920px) {
+    .hamburger { display: flex; }
+    .nav-links { 
+      position: absolute; 
+      top: 55px; 
+      right: 0; 
+      left: auto;
+      width: 210px;
+      background: var(--card-bg); 
+      flex-direction: column; 
+      padding: 10px; 
+      display: none; 
+      border-radius: var(--radius); 
+      box-shadow: var(--shadow-3d); 
+      border: 1px solid var(--line);
+      z-index: 150;
+      align-items: stretch;
+    }
+    .nav-links a { text-align: left; padding: 10px 14px; width: 100%; border-radius: 10px; }
+    .nav-links.open { display: flex; animation: slideDown 0.25s ease-out forwards; }
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .page-section { display: none; padding: 60px 0; min-height: 80vh; animation: fadeIn 0.4s ease-in-out forwards; position: relative; z-index: 1; }
+  .page-section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .form-group { margin-bottom: 16px; text-align: left; }
+  .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 0.95rem; font-family: inherit; }
+
+  .checkbox-group { display: flex; flex-direction: column; gap: 8px; background: var(--bg); padding: 12px; border-radius: 8px; border: 1px solid var(--line); max-height: 160px; overflow-y: auto; }
+  .checkbox-item { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; cursor: pointer; }
+  .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+
+  .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #fff; padding: 12px 28px; border-radius: 30px; font-weight: 600; border: none; cursor: pointer; transition: all 0.3s; display: inline-block; }
+  .btn-accent { background: linear-gradient(135deg, var(--accent) 0%, #B88244 100%); color: #fff; padding: 12px 28px; border-radius: 30px; font-weight: 600; border: none; cursor: pointer; transition: all 0.3s; display: inline-block; }
+
+  .hero { text-align: center; max-width: 850px; margin: 0 auto; }
+  .hero h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.15; margin: 16px 0; }
+  .hero h1 span { color: var(--accent); }
+  
+  .grid-3d { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 30px; }
+  .card-item { background: var(--card-bg); padding: 26px; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow-3d); transition: all 0.3s ease; }
+  .card-item:hover { transform: translateY(-5px); }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 40px; text-align: center; }
+  .stat-card { background: var(--card-bg); padding: 20px; border-radius: var(--radius); border: 1px solid var(--line); }
+  .stat-card .num { font-size: 2rem; font-weight: 700; color: var(--accent); font-family: 'Fraunces', serif; }
+
+  .contact-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+  .c-btn { padding: 12px 26px; border-radius: 30px; font-weight: 600; color: white; display: flex; align-items: center; gap: 8px; }
+  .c-btn.wa { background: #25D366; }
+  .c-btn.call { background: var(--primary); }
+  .c-btn.mail { background: #EA4335; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 500; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.show { display: flex; }
+  .modal-box { background: #fff; padding: 32px; border-radius: var(--radius); max-width: 500px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto; }
+  .close-modal { position: absolute; top: 18px; right: 20px; background: none; border: none; font-size: 1.4rem; cursor: pointer; }
+
+  .admin-panel { position: fixed; inset: 0; background: #FAF8F5; z-index: 600; display: none; overflow-y: auto; padding: 30px 20px; }
+  .admin-panel.show { display: block; }
+  .admin-sec { background: #fff; padding: 24px; border-radius: var(--radius); border: 1px solid var(--line); margin-bottom: 24px; }
+  
+  .admin-field-row { background: var(--bg); padding: 12px; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+
+  footer { background: var(--primary); color: #fff; text-align: center; padding: 30px 0; font-size: 0.9rem; position: relative; z-index: 10; }
+</style>
+</head>
+<body>
+
+<canvas id="allSubjectsCanvas"></canvas>
+<div id="noticeBar" class="notice-bar"></div>
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- 1. AUTH SCREEN -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div style="font-family:'Fraunces', serif; font-size:1.8rem; font-weight:700; color:var(--primary); margin-bottom:6px;">Tuition Portal</div>
+    <p style="font-size: 0.85rem; color:var(--text-muted); margin-bottom: 20px;">Student & Teacher Official Portal</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthMode('login')">Login</button>
+      <button class="auth-tab" onclick="switchAuthMode('signup')">Sign Up</button>
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Email / Mobile Phone</label>
+        <input type="text" id="loginId" placeholder="e.g. 03123456789 or name@mail.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn-primary" style="width: 100%;">Login to Portal 🚀</button>
+    </form>
+
+    <form id="signupForm" style="display: none;">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="signupName" placeholder="Enter student full name" required>
+      </div>
+      <div class="form-group">
+        <label>Email / Mobile Phone</label>
+        <input type="text" id="signupId" placeholder="e.g. 03123456789 or name@mail.com" required>
+      </div>
+      <div class="form-group">
+        <label>Create Password</label>
+        <input type="password" id="signupPass" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn-accent" style="width: 100%;">Create Account ✨</button>
+    </form>
+
+    <div style="margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px;">
+      <button onclick="guestLogin()" style="background:none; border:none; color:var(--accent); font-weight:600; cursor:pointer; font-size:0.88rem;">⏩ Continue as Guest</button>
+    </div>
+  </div>
+</div>
+
+<!-- 2. MAIN APP -->
+<div id="appScreen">
+  <header>
+    <div class="nav wrap">
+      <div class="logo">
+        <div class="logo-img-container" id="globalHeaderLogo">
+          <span class="mark" id="headerInitials">AA</span>
+        </div>
+        <span id="navName">Araiz Ahmed</span>
+      </div>
+
+      <div class="right-corner-group">
+        <nav class="nav-links" id="mobileNav">
+          <a href="#home" class="active" onclick="switchPage('home')">Home</a>
+          <a href="#subjects" onclick="switchPage('subjects')">Subjects</a>
+          <a href="#about" onclick="switchPage('about')">About Me</a>
+          <a href="#fee" onclick="switchPage('fee')">Fee Details</a>
+          <a href="#reviews" onclick="switchPage('reviews')">Reviews</a>
+          <a href="#contact" onclick="switchPage('contact')">Contact</a>
+        </nav>
+
+        <div class="nav-controls">
+          <button class="theme-btn" onclick="rotateTheme()" title="Change Theme">🎨</button>
+          <span class="user-badge" id="currentUserDisplay">👤 Student</span>
+          <button class="admin-top-btn" onclick="openLogin()">🔑 Admin</button>
+          <button class="logout-btn" onclick="logout()" title="Logout">🚪</button>
+        </div>
+
+        <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HOME PAGE -->
+  <section id="page-home" class="page-section wrap active">
+    <div class="hero">
+      <span id="heroBadge" style="background:var(--accent-glow); color:var(--primary); padding:6px 18px; border-radius:30px; font-size:0.85rem; font-weight:600; border:1px solid var(--accent);">📍 Home Tuition & Online Classes</span>
+      <h1 id="heroTitle">Personalized Coaching That <span>Guarantees Results</span></h1>
+      <p id="heroSub" style="color:var(--text-muted); font-size:1.1rem; margin-bottom:24px;">Individualized focus, patient explanations, and conceptual mastery built around your child's pace.</p>
+      <div>
+        <button class="btn-accent" onclick="openAdmissionModal()">🎓 Apply for Admission</button>
+        <button class="btn-primary" onclick="switchPage('contact')">💬 Contact Teacher</button>
+      </div>
+    </div>
+
+    <div class="stats-grid" id="statsDisplay"></div>
+  </section>
+
+  <!-- SUBJECTS PAGE -->
+  <section id="page-subjects" class="page-section wrap">
+    <div style="text-align: center;">
+      <h2>Subjects Taught</h2>
+      <p style="color: var(--text-muted);">Math, Science, English, CS & Humanities for Matric, Inter & O/A Levels.</p>
+      <input type="text" id="subjSearch" oninput="filterSubjects()" placeholder="🔍 Search subject name..." style="max-width:400px; padding:10px; margin-top:15px; border-radius:20px; border:1px solid var(--line);">
+    </div>
+    <div class="grid-3d" id="subjectsGrid"></div>
+  </section>
+
+  <!-- ABOUT PAGE -->
+  <section id="page-about" class="page-section wrap">
+    <div class="card-item" style="max-width: 800px; margin: 0 auto;">
+      <h2 id="aboutTitleDisplay">About the Teacher</h2>
+      <p id="aboutContentDisplay" style="margin-top: 15px; color: var(--text-muted); white-space: pre-line;"></p>
+    </div>
+  </section>
+
+  <!-- FEE PAGE -->
+  <section id="page-fee" class="page-section wrap">
+    <div class="card-item" style="text-align: center; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #fff;">
+      <h2 style="color: #fff;">Transparent Monthly Fee</h2>
+      <div style="font-size: 3.5rem; font-family: 'Fraunces', serif; color: var(--accent); margin: 15px 0;">
+        Rs. <span id="feeAmount">3,000</span><span style="font-size: 1.2rem; color: #fff;">/month</span>
+      </div>
+      <button class="btn-accent" onclick="openAdmissionModal()">Book Admission Now</button>
+    </div>
+  </section>
+
+  <!-- REVIEWS PAGE -->
+  <section id="page-reviews" class="page-section wrap">
+    <div style="text-align: center; max-width: 600px; margin: 0 auto 30px auto;">
+      <h2>Student & Parent Reviews</h2>
+      <p style="color: var(--text-muted);">Read existing feedback or post your own review below!</p>
+      <button class="btn-accent" style="margin-top: 12px;" onclick="openReviewModal()">✍️ Write a Review</button>
+    </div>
+    <div class="grid-3d" id="reviewsGrid"></div>
+  </section>
+
+  <!-- CONTACT PAGE -->
+  <section id="page-contact" class="page-section wrap">
+    <div style="text-align: center;">
+      <h2>Get in Touch</h2>
+      <div class="contact-btns">
+        <a href="#" id="linkWA" target="_blank" class="c-btn wa">💬 WhatsApp Chat</a>
+        <a href="#" id="linkCall" class="c-btn call">📞 Call Directly</a>
+        <a href="#" id="linkMail" class="c-btn mail">✉️ Send Email</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© <span id="yearNow"></span> <span id="footName">Araiz Ahmed</span> — Private Home & Online Tuition.</p>
+  </footer>
+</div>
+
+<!-- WRITE REVIEW MODAL -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeReviewModal()">&times;</button>
+    <h3>Write Your Review</h3>
+    <form id="studentReviewForm" style="margin-top:15px;">
+      <div class="form-group">
+        <label>Your Name / Role</label>
+        <input type="text" id="revAuthor" placeholder="Enter your full name or role (e.g. Hamza - Grade 10)" required>
+      </div>
+      <div class="form-group">
+        <label>Your Experience / Review</label>
+        <textarea id="revContent" rows="4" placeholder="Type your honest experience about teaching quality..." required></textarea>
+      </div>
+      <button type="submit" class="btn-primary" style="width: 100%;">Submit Review 🌟</button>
+    </form>
+  </div>
+</div>
+
+<!-- ADMISSION MODAL -->
+<div class="modal-overlay" id="admissionModal">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeAdmissionModal()">&times;</button>
+    <h3>Student Admission Request</h3>
+    <form id="admissionForm" style="margin-top:15px;">
+      <!-- Dynamic Form Fields Container -->
+      <div id="dynamicAdmissionFieldsContainer"></div>
+
+      <div class="form-group">
+        <label>Select Subject(s) Needed</label>
+        <div class="checkbox-group" id="admSubjectCheckboxContainer"></div>
+      </div>
+
+      <button type="submit" class="btn-accent" style="width: 100%;">Send Request via WhatsApp 🚀</button>
+    </form>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box" style="max-width: 360px; text-align: center;">
+    <button class="close-modal" onclick="closeLogin()">&times;</button>
+    <h3>Admin Login</h3>
+    <p style="font-size:0.85rem; margin:10px 0;">Enter Security PIN (Default: 123)</p>
+    <input type="password" id="pinInput" placeholder="Enter PIN code" style="text-align:center; font-size:1.4rem; padding:8px; width:100%; margin-bottom:10px;">
+    <button class="btn-primary" style="width: 100%;" onclick="attemptLogin()">Unlock Panel</button>
+  </div>
+</div>
+
+<!-- ADMIN CONTROL PANEL -->
+<div class="admin-panel" id="adminPanel">
+  <div class="wrap">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+      <h2>Admin Control Panel</h2>
+      <button class="btn-primary" onclick="closeAdmin()">Close Panel</button>
+    </div>
+
+    <!-- Profile Pic Upload -->
+    <div class="admin-sec">
+      <h3>Profile Picture & Logo (Auto Compressed)</h3>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">Upload image here. Images are automatically optimized so they save smoothly.</p>
+      <div class="form-group">
+        <label>Upload Photo from Device</label>
+        <input type="file" id="in_profilePic" accept="image/*" onchange="handleProfilePicUpload(event)">
+      </div>
+      <div style="display:flex; align-items:center; gap:15px; margin-top:10px;">
+        <div class="logo-img-container" style="width:60px; height:60px;" id="adminPreviewContainer">
+          <span class="mark" id="adminPreviewInitials">AA</span>
+        </div>
+        <button type="button" onclick="removeProfilePic()" style="color:var(--danger); background:none; border:none; cursor:pointer; font-weight:600;">Remove Picture (Use Text Initials)</button>
+      </div>
+    </div>
+
+    <!-- Dynamic Admission Form Editor (NEW) -->
+    <div class="admin-sec">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3>Admission Form Questions Editor</h3>
+        <button type="button" class="btn-accent" onclick="addAdmissionFormField()">+ Add Form Question</button>
+      </div>
+      <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">Customize fields asked from students in the admission popup modal.</p>
+      <div id="adminAdmissionFieldsList"></div>
+    </div>
+
+    <!-- Stats Editor -->
+    <div class="admin-sec">
+      <h3>Stats Counter Editor</h3>
+      <div class="form-group"><label>Students Taught</label><input type="text" id="in_statStudents" placeholder="e.g. 100+"></div>
+      <div class="form-group"><label>Success Rate</label><input type="text" id="in_statSuccess" placeholder="e.g. 95%"></div>
+      <div class="form-group"><label>Teaching Experience</label><input type="text" id="in_statExp" placeholder="e.g. 5+ Yrs"></div>
+    </div>
+
+    <!-- Announcement Banner -->
+    <div class="admin-sec">
+      <h3>Announcement Banner</h3>
+      <div class="form-group" style="display:flex; gap:10px; align-items:center; margin-top:10px;">
+        <input type="checkbox" id="in_noticeShow" style="width:auto;"> <label for="in_noticeShow" style="margin:0;">Show Announcement Banner</label>
+      </div>
+      <div class="form-group"><label>Notice Text</label><input type="text" id="in_noticeText" placeholder="Enter banner announcement text"></div>
+    </div>
+
+    <!-- Basic Site Info -->
+    <div class="admin-sec">
+      <h3>Basic Site Info</h3>
+      <div class="form-group"><label>Teacher Name</label><input type="text" id="in_teacherName" placeholder="Enter teacher name"></div>
+      <div class="form-group"><label>Initials (Fallback Logo)</label><input type="text" id="in_initials" placeholder="e.g. AA"></div>
+      <div class="form-group"><label>Phone Number</label><input type="text" id="in_phone" placeholder="e.g. 03123456789"></div>
+      <div class="form-group"><label>Email</label><input type="text" id="in_email" placeholder="e.g. email@domain.com"></div>
+      <div class="form-group"><label>Monthly Fee</label><input type="text" id="in_feeAmount" placeholder="e.g. 3,000"></div>
+      <div class="form-group"><label>Security PIN</label><input type="text" id="in_pin" placeholder="Enter admin panel PIN"></div>
+    </div>
+
+    <!-- Hero Controls -->
+    <div class="admin-sec">
+      <h3>Hero Section Editor</h3>
+      <div class="form-group"><label>Top Tagline Badge</label><input type="text" id="in_heroBadge" placeholder="Enter top badge text"></div>
+      <div class="form-group"><label>Main Heading</label><input type="text" id="in_heroTitle" placeholder="Enter main hero heading"></div>
+      <div class="form-group"><label>Subtitle Text</label><textarea id="in_heroSub" placeholder="Enter hero subtext"></textarea></div>
+    </div>
+
+    <!-- About Me Editor -->
+    <div class="admin-sec">
+      <h3>About Me Editor</h3>
+      <div class="form-group"><label>Section Title</label><input type="text" id="in_aboutTitle" placeholder="Enter section title"></div>
+      <div class="form-group"><label>Section Content</label><textarea id="in_aboutContent" rows="5" placeholder="Enter about details"></textarea></div>
+    </div>
+
+    <!-- Subjects Manager -->
+    <div class="admin-sec">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3>Subjects Manager</h3>
+        <button type="button" class="btn-accent" onclick="addSubjectItem()">+ Add Subject</button>
+      </div>
+      <div id="adminSubjectsList" style="margin-top:15px;"></div>
+    </div>
+
+    <button type="button" class="btn-accent" style="width: 100%; padding: 16px; font-size:1.05rem;" onclick="saveAllAdmin()">💾 Save & Sync All Changes</button>
+  </div>
+</div>
+
+<script>
+const DEFAULT_DATA = {
+  teacherName: "Araiz Ahmed",
+  initials: "AA",
+  profilePic: null,
+  phone: "03123735457",
+  email: "lagharitahir08@gmail.com",
+  feeAmount: "3,000",
+  pin: "123",
+  noticeShow: true,
+  noticeText: "📣 Admissions Open for New Session! Limited Home Tuition Slots Available.",
+  heroBadge: "📍 Home Tuition & Online Interactive Classes",
+  heroTitle: "Personalized Coaching That <span>Guarantees Results</span>",
+  heroSub: "Individualized focus, patient explanations, and conceptual mastery built around your child's pace.",
+  aboutTitle: "About the Teacher",
+  aboutContent: "I visit students' homes directly for 1-on-1 personalized study sessions, providing a safe, comfortable, and focused learning environment without commuting hassle.\n\nWith years of teaching experience, my goal is to break down complex scientific, mathematical, linguistic and computational concepts into easily digestible lessons.",
+  stats: [
+    { num: "100+", label: "Students Taught" },
+    { num: "95%", label: "Success Rate" },
+    { num: "5+ Yrs", label: "Teaching Experience" }
+  ],
+  subjects: [
+    { title: "Mathematics", desc: "Grades 6-12 · Algebra, Geometry, Calculus & Statistics." },
+    { title: "Physics & Chemistry", desc: "Mechanics, Electricity, Periodic Table & Equations." },
+    { title: "Computer Science", desc: "Basic IT, Programming Concepts, Logic & Algorithms." },
+    { title: "English Grammar & Comp", desc: "Vocabulary, Spoken Skills, Essay Writing & Comprehension." }
+  ],
+  admissionFormFields: [
+    { id: "admName", label: "Student Full Name", type: "text", placeholder: "Enter student full name", required: true },
+    { id: "admFatherName", label: "Father's Name", type: "text", placeholder: "Enter father's full name", required: true },
+    { id: "admFatherPhone", label: "Father's Phone Number", type: "tel", placeholder: "Enter father's contact number (e.g. 03001234567)", required: true },
+    { id: "admGrade", label: "Grade / Class", type: "text", placeholder: "Enter class/grade (e.g. Class 9, O-Levels)", required: true },
+    { id: "admMode", label: "Learning Mode", type: "select", options: ["Home Tuition (At Student's Home)", "Online Interactive Tuition"], required: true }
+  ],
+  reviews: [
+    { text: "Excellent teaching style! My son improved his grade significantly in just one month.", name: "Parent of Grade 9 Student" }
+  ]
+};
+
+let siteData = {};
+let registeredUsers = [];
+let loggedUser = null;
+let tempProfilePic = null;
+const themes = ['', 'theme-emerald', 'theme-purple', 'theme-crimson'];
+let currentThemeIdx = 0;
+
+function showToast(message, isError = false) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${isError ? 'error' : ''}`;
+  toast.innerHTML = `<span>${isError ? '⚠️' : '✨'}</span> <div>${message}</div>`;
+  container.appendChild(toast);
+
+  setTimeout(() => toast.classList.add('show'), 50);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3200);
+}
+
+function loadData() {
+  const saved = localStorage.getItem('tuitionFullData_v6');
+  siteData = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_DATA));
+  
+  if(!siteData.admissionFormFields) {
+    siteData.admissionFormFields = JSON.parse(JSON.stringify(DEFAULT_DATA.admissionFormFields));
+  }
+
+  const savedUsers = localStorage.getItem('tuitionUsersList');
+  registeredUsers = savedUsers ? JSON.parse(savedUsers) : [];
+
+  const activeUser = localStorage.getItem('activeTuitionUser');
+  if(activeUser) { 
+    loggedUser = JSON.parse(activeUser); 
+    showMainApp(); 
+  }
+}
+
+function saveData() { 
+  try {
+    localStorage.setItem('tuitionFullData_v6', JSON.stringify(siteData)); 
+  } catch(e) {
+    showToast('Storage full! Trying further image optimization...', true);
+  }
+}
+
+function switchAuthMode(mode) {
+  document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
+  if(mode === 'login') {
+    document.querySelectorAll('.auth-tab')[0].classList.add('active');
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('signupForm').style.display = 'none';
+  } else {
+    document.querySelectorAll('.auth-tab')[1].classList.add('active');
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('signupForm').style.display = 'block';
+  }
+}
+
+document.getElementById('signupForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const name = document.getElementById('signupName').value.trim();
+  const userId = document.getElementById('signupId').value.trim().toLowerCase();
+  const pass = document.getElementById('signupPass').value;
+
+  const userExists = registeredUsers.some(u => u.id === userId);
+  if(userExists) {
+    showToast('User already registered with this Email/Phone!', true);
+    return;
+  }
+
+  const newUser = { name, id: userId, pass };
+  registeredUsers.push(newUser);
+  localStorage.setItem('tuitionUsersList', JSON.stringify(registeredUsers));
+
+  loggedUser = { name: newUser.name, id: newUser.id };
+  localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
+
+  showToast('Account created successfully!');
+  showMainApp();
+});
+
+document.getElementById('loginForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const userId = document.getElementById('loginId').value.trim().toLowerCase();
+  const pass = document.getElementById('loginPass').value;
+
+  const validUser = registeredUsers.find(u => u.id === userId && u.pass === pass);
+  
+  if(validUser) {
+    loggedUser = { name: validUser.name, id: validUser.id };
+    localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
+    showToast(`Welcome back, ${validUser.name}!`);
+    showMainApp();
+  } else {
+    showToast('Invalid Email/Phone or Password!', true);
+  }
+});
+
+function guestLogin() {
+  loggedUser = { name: "Guest Student", id: "guest" };
+  showToast('Entered as Guest');
+  showMainApp();
+}
+
+function logout() {
+  localStorage.removeItem('activeTuitionUser');
+  loggedUser = null;
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+  showToast('Logged out successfully!');
+}
+
+function showMainApp() {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'block';
+  
+  const userDisp = document.getElementById('currentUserDisplay');
+  if(loggedUser && loggedUser.name) {
+    userDisp.innerHTML = `👤 ${escapeHtml(loggedUser.name)}`;
+  } else {
+    userDisp.innerHTML = `👤 Student`;
+  }
+  
+  renderSite();
+}
+
+function switchPage(pageId) {
+  document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  
+  const targetSec = document.getElementById(`page-${pageId}`);
+  if(targetSec) targetSec.classList.add('active');
+  
+  const targetLink = document.querySelector(`.nav-links a[href="#${pageId}"]`);
+  if(targetLink) targetLink.classList.add('active');
+
+  document.getElementById('mobileNav').classList.remove('open');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleMobileMenu() {
+  document.getElementById('mobileNav').classList.toggle('open');
+}
+
+document.addEventListener('click', function(e) {
+  const nav = document.getElementById('mobileNav');
+  const burger = document.querySelector('.hamburger');
+  if (nav && burger && !nav.contains(e.target) && !burger.contains(e.target)) {
+    nav.classList.remove('open');
+  }
+});
+
+function rotateTheme() {
+  currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+  document.body.className = themes[currentThemeIdx];
+  showToast('Theme design updated!');
+}
+
+function renderSite() {
+  const nb = document.getElementById('noticeBar');
+  if(siteData.noticeShow && siteData.noticeText) {
+    nb.style.display = 'block';
+    nb.textContent = siteData.noticeText;
+  } else {
+    nb.style.display = 'none';
+  }
+
+  const headerLogoWrapper = document.getElementById('globalHeaderLogo');
+  if(siteData.profilePic) {
+    headerLogoWrapper.innerHTML = `<img src="${siteData.profilePic}" alt="Teacher Profile">`;
+  } else {
+    headerLogoWrapper.innerHTML = `<span class="mark" id="headerInitials">${escapeHtml(siteData.initials || "AA")}</span>`;
+  }
+
+  document.getElementById('navName').textContent = siteData.teacherName;
+  document.getElementById('feeAmount').textContent = siteData.feeAmount;
+  document.getElementById('footName').textContent = siteData.teacherName;
+  document.getElementById('yearNow').textContent = new Date().getFullYear();
+
+  document.getElementById('heroBadge').textContent = siteData.heroBadge;
+  document.getElementById('heroTitle').innerHTML = siteData.heroTitle;
+  document.getElementById('heroSub').textContent = siteData.heroSub;
+
+  document.getElementById('aboutTitleDisplay').textContent = siteData.aboutTitle || "About the Teacher";
+  document.getElementById('aboutContentDisplay').textContent = siteData.aboutContent || "";
+
+  const statsBox = document.getElementById('statsDisplay');
+  statsBox.innerHTML = (siteData.stats || []).map(st => `
+    <div class="stat-card">
+      <div class="num">${escapeHtml(st.num)}</div>
+      <div style="color:var(--text-muted); font-size:0.9rem;">${escapeHtml(st.label)}</div>
+    </div>
+  `).join('');
+
+  const cPhone = siteData.phone ? siteData.phone.replace(/[^0-9]/g, '').replace(/^0/, '') : '';
+  document.getElementById('linkWA').href = `https://wa.me/92${cPhone}`;
+  document.getElementById('linkCall').href = `tel:${siteData.phone}`;
+  document.getElementById('linkMail').href = `mailto:${siteData.email}`;
+
+  renderSubjectsList(siteData.subjects || []);
+  renderReviewsList();
+  renderDynamicAdmissionFields();
+  renderAdmissionSubjectsCheckboxes();
+}
+
+function renderSubjectsList(list) {
+  const subjGrid = document.getElementById('subjectsGrid');
+  subjGrid.innerHTML = list.map(s => `
+    <div class="card-item">
+      <h3>📖 ${escapeHtml(s.title)}</h3>
+      <p style="margin-top: 10px; color: var(--text-muted);">${escapeHtml(s.desc)}</p>
+    </div>
+  `).join('');
+}
+
+function renderDynamicAdmissionFields() {
+  const container = document.getElementById('dynamicAdmissionFieldsContainer');
+  if (!container) return;
+
+  const fields = siteData.admissionFormFields || [];
+  let html = '';
+
+  fields.forEach(f => {
+    const isReq = f.required ? 'required' : '';
+    if (f.type === 'select') {
+      const opts = (f.options || []).map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('');
+      html += `
+        <div class="form-group">
+          <label>${escapeHtml(f.label)} ${f.required ? '*' : ''}</label>
+          <select id="dyn_${f.id}" ${isReq}>
+            <option value="" disabled selected>Select ${escapeHtml(f.label)}</option>
+            ${opts}
+          </select>
+        </div>
+      `;
+    } else {
+      html += `
+        <div class="form-group">
+          <label>${escapeHtml(f.label)} ${f.required ? '*' : ''}</label>
+          <input type="${f.type || 'text'}" id="dyn_${f.id}" placeholder="${escapeHtml(f.placeholder || '')}" ${isReq}>
+        </div>
+      `;
+    }
+  });
+
+  container.innerHTML = html;
+}
+
+function renderAdmissionSubjectsCheckboxes() {
+  const container = document.getElementById('admSubjectCheckboxContainer');
+  if (!container) return;
+
+  let html = `
+    <label class="checkbox-item">
+      <input type="checkbox" value="All Subjects" id="chkAllSubjects" onchange="toggleSelectAllSubjects(this)">
+      <b>🌟 All Subjects Package</b>
+    </label>
+    <hr style="border: 0; border-top: 1px solid var(--line); margin: 4px 0;">
+  `;
+
+  (siteData.subjects || []).forEach((s, idx) => {
+    html += `
+      <label class="checkbox-item">
+        <input type="checkbox" class="adm-subj-chk" value="${escapeHtml(s.title)}">
+        <span>${escapeHtml(s.title)}</span>
+      </label>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+function toggleSelectAllSubjects(master) {
+  const checkboxes = document.querySelectorAll('.adm-subj-chk');
+  checkboxes.forEach(chk => chk.checked = master.checked);
+}
+
+function filterSubjects() {
+  const query = document.getElementById('subjSearch').value.toLowerCase();
+  const filtered = siteData.subjects.filter(s => s.title.toLowerCase().includes(query) || s.desc.toLowerCase().includes(query));
+  renderSubjectsList(filtered);
+}
+
+function renderReviewsList() {
+  const revGrid = document.getElementById('reviewsGrid');
+  revGrid.innerHTML = (siteData.reviews || []).map(r => `
+    <div class="card-item">
+      <p>"${escapeHtml(r.text)}"</p>
+      <b style="display: block; margin-top: 12px; color: var(--primary);">- ${escapeHtml(r.name)}</b>
+    </div>
+  `).join('');
+}
+
+function openReviewModal() { 
+  if(loggedUser) document.getElementById('revAuthor').value = loggedUser.name;
+  document.getElementById('reviewModal').classList.add('show'); 
+}
+function closeReviewModal() { document.getElementById('reviewModal').classList.remove('show'); }
+
+document.getElementById('studentReviewForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const author = document.getElementById('revAuthor').value;
+  const content = document.getElementById('revContent').value;
+  
+  siteData.reviews.unshift({ text: content, name: author });
+  saveData();
+  renderReviewsList();
+  closeReviewModal();
+  showToast('Review submitted successfully!');
+});
+
+function openAdmissionModal() { 
+  renderDynamicAdmissionFields();
+  
+  if(loggedUser && loggedUser.name !== "Guest Student") {
+    const firstField = siteData.admissionFormFields[0];
+    if (firstField && document.getElementById(`dyn_${firstField.id}`)) {
+      document.getElementById(`dyn_${firstField.id}`).value = loggedUser.name;
+    }
+  }
+  document.getElementById('admissionModal').classList.add('show'); 
+}
+
+function closeAdmissionModal() { document.getElementById('admissionModal').classList.remove('show'); }
+
+document.getElementById('admissionForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  let msgLines = ["*New Student Admission Request*", ""];
+  const fields = siteData.admissionFormFields || [];
+
+  for (let f of fields) {
+    const el = document.getElementById(`dyn_${f.id}`);
+    const val = el ? el.value.trim() : '';
+    if (f.required && !val) {
+      showToast(`Please fill out ${f.label}`, true);
+      return;
+    }
+    msgLines.push(`📋 *${f.label}:* ${val}`);
+  }
+
+  const selectedSubjects = [];
+  const masterAll = document.getElementById('chkAllSubjects');
+  
+  if (masterAll && masterAll.checked) {
+    selectedSubjects.push("All Subjects Package");
+  } else {
+    document.querySelectorAll('.adm-subj-chk:checked').forEach(chk => {
+      selectedSubjects.push(chk.value);
+    });
+  }
+
+  if (selectedSubjects.length === 0) {
+    showToast('Please select at least one subject or All Subjects!', true);
+    return;
+  }
+
+  msgLines.push(`📖 *Subjects Required:* ${selectedSubjects.join(', ')}`);
+
+  const msg = encodeURIComponent(msgLines.join('\n'));
+  const cPhone = siteData.phone.replace(/[^0-9]/g, '').replace(/^0/, '');
+  window.open(`https://wa.me/92${cPhone}?text=${msg}`, '_blank');
+  closeAdmissionModal();
+  showToast('Connecting to WhatsApp...');
+});
+
+function openLogin() { document.getElementById('loginModal').classList.add('show'); }
+function closeLogin() { document.getElementById('loginModal').classList.remove('show'); }
+
+function attemptLogin() {
+  if(document.getElementById('pinInput').value === siteData.pin) {
+    closeLogin();
+    fillAdminForm();
+    document.getElementById('adminPanel').classList.add('show');
+    showToast('Admin Panel Unlocked');
+  } else { 
+    showToast('Incorrect Admin PIN!', true); 
+  }
+}
+function closeAdmin() { document.getElementById('adminPanel').classList.remove('show'); }
+
+function handleProfilePicUpload(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const maxDim = 200;
+        let w = img.width;
+        let h = img.height;
+
+        if (w > h) {
+          if (w > maxDim) { h *= maxDim / w; w = maxDim; }
+        } else {
+          if (h > maxDim) { w *= maxDim / h; h = maxDim; }
+        }
+
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+
+        tempProfilePic = canvas.toDataURL('image/jpeg', 0.85);
+        updateAdminPreview(tempProfilePic, document.getElementById('in_initials').value);
+        showToast('Image uploaded and optimized!');
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function removeProfilePic() {
+  tempProfilePic = null;
+  updateAdminPreview(null, document.getElementById('in_initials').value);
+}
+
+function updateAdminPreview(picSrc, initials) {
+  const container = document.getElementById('adminPreviewContainer');
+  if(picSrc) {
+    container.innerHTML = `<img src="${picSrc}" alt="Preview">`;
+  } else {
+    container.innerHTML = `<span class="mark" id="adminPreviewInitials">${escapeHtml(initials || "AA")}</span>`;
+  }
+}
+
+function fillAdminForm() {
+  tempProfilePic = siteData.profilePic;
+  updateAdminPreview(tempProfilePic, siteData.initials);
+
+  document.getElementById('in_statStudents').value = siteData.stats[0]?.num || "100+";
+  document.getElementById('in_statSuccess').value = siteData.stats[1]?.num || "95%";
+  document.getElementById('in_statExp').value = siteData.stats[2]?.num || "5+ Yrs";
+
+  document.getElementById('in_noticeShow').checked = siteData.noticeShow || false;
+  document.getElementById('in_noticeText').value = siteData.noticeText || "";
+  document.getElementById('in_teacherName').value = siteData.teacherName || "";
+  document.getElementById('in_initials').value = siteData.initials || "AA";
+  document.getElementById('in_phone').value = siteData.phone || "";
+  document.getElementById('in_email').value = siteData.email || "";
+  document.getElementById('in_feeAmount').value = siteData.feeAmount || "";
+  document.getElementById('in_pin').value = siteData.pin || "123";
+
+  document.getElementById('in_heroBadge').value = siteData.heroBadge || "";
+  document.getElementById('in_heroTitle').value = siteData.heroTitle || "";
+  document.getElementById('in_heroSub').value = siteData.heroSub || "";
+
+  document.getElementById('in_aboutTitle').value = siteData.aboutTitle || "";
+  document.getElementById('in_aboutContent').value = siteData.aboutContent || "";
+
+  renderAdminAdmissionFields();
+  renderAdminSubjects();
+}
+
+/* ADMISSION FORM ADMIN EDITOR */
+function renderAdminAdmissionFields() {
+  const container = document.getElementById('adminAdmissionFieldsList');
+  const fields = siteData.admissionFormFields || [];
+
+  container.innerHTML = fields.map((f, i) => `
+    <div class="admin-field-row">
+      <div style="display:flex; gap:10px; align-items:center;">
+        <input type="text" id="adm_field_label_${i}" value="${escapeHtml(f.label)}" placeholder="Question / Field Title (e.g. City Name)">
+        <select id="adm_field_type_${i}" onchange="toggleAdminSelectOptions(${i})">
+          <option value="text" ${f.type==='text'?'selected':''}>Text Input</option>
+          <option value="tel" ${f.type==='tel'?'selected':''}>Phone/Number</option>
+          <option value="select" ${f.type==='select'?'selected':''}>Dropdown Menu</option>
+        </select>
+      </div>
+
+      <div id="adm_field_opts_wrap_${i}" style="display:${f.type==='select'?'block':'none'};">
+        <input type="text" id="adm_field_opts_${i}" value="${escapeHtml((f.options || []).join(', '))}" placeholder="Dropdown options separated by comma (e.g. Home Tuition, Online)">
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem;">
+        <label><input type="checkbox" id="adm_field_req_${i}" ${f.required?'checked':''}> Required Field</label>
+        <button type="button" onclick="deleteAdmissionFormField(${i})" style="color:var(--danger); background:none; border:none; cursor:pointer;">🗑 Delete Field</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleAdminSelectOptions(i) {
+  const type = document.getElementById(`adm_field_type_${i}`).value;
+  document.getElementById(`adm_field_opts_wrap_${i}`).style.display = (type === 'select') ? 'block' : 'none';
+}
+
+function addAdmissionFormField() {
+  if(!siteData.admissionFormFields) siteData.admissionFormFields = [];
+  siteData.admissionFormFields.push({
+    id: "custom_" + Date.now(),
+    label: "New Question",
+    type: "text",
+    placeholder: "Enter details",
+    required: true
+  });
+  renderAdminAdmissionFields();
+}
+
+function deleteAdmissionFormField(index) {
+  siteData.admissionFormFields.splice(index, 1);
+  renderAdminAdmissionFields();
+}
+
+function renderAdminSubjects() {
+  const container = document.getElementById('adminSubjectsList');
+  container.innerHTML = (siteData.subjects || []).map((s, i) => `
+    <div style="background: var(--bg); padding: 12px; margin-bottom: 8px; border-radius: 8px; border:1px solid var(--line);">
+      <input type="text" id="subj_title_${i}" value="${escapeHtml(s.title)}" placeholder="Enter subject title" style="margin-bottom:6px; font-weight:600;">
+      <textarea id="subj_desc_${i}" rows="2" placeholder="Enter subject description">${escapeHtml(s.desc)}</textarea>
+      <button type="button" onclick="deleteSubjectItem(${i})" style="color:var(--danger); background:none; border:none; cursor:pointer; margin-top:4px;">🗑 Delete Subject</button>
+    </div>
+  `).join('');
+}
+
+function addSubjectItem() {
+  if(!siteData.subjects) siteData.subjects = [];
+  siteData.subjects.push({ title: "New Subject", desc: "Subject Description..." });
+  renderAdminSubjects();
+}
+
+function deleteSubjectItem(index) {
+  siteData.subjects.splice(index, 1);
+  renderAdminSubjects();
+}
+
+function saveAllAdmin() {
+  try {
+    siteData.profilePic = tempProfilePic;
+
+    siteData.stats = [
+      { num: document.getElementById('in_statStudents').value, label: "Students Taught" },
+      { num: document.getElementById('in_statSuccess').value, label: "Success Rate" },
+      { num: document.getElementById('in_statExp').value, label: "Teaching Experience" }
+    ];
+
+    siteData.noticeShow = document.getElementById('in_noticeShow').checked;
+    siteData.noticeText = document.getElementById('in_noticeText').value;
+    siteData.teacherName = document.getElementById('in_teacherName').value;
+    siteData.initials = document.getElementById('in_initials').value;
+    siteData.phone = document.getElementById('in_phone').value;
+    siteData.email = document.getElementById('in_email').value;
+    siteData.feeAmount = document.getElementById('in_feeAmount').value;
+    siteData.pin = document.getElementById('in_pin').value;
+
+    siteData.heroBadge = document.getElementById('in_heroBadge').value;
+    siteData.heroTitle = document.getElementById('in_heroTitle').value;
+    siteData.heroSub = document.getElementById('in_heroSub').value;
+
+    siteData.aboutTitle = document.getElementById('in_aboutTitle').value;
+    siteData.aboutContent = document.getElementById('in_aboutContent').value;
+
+    // Save Admission Form Fields
+    if (siteData.admissionFormFields) {
+      siteData.admissionFormFields = siteData.admissionFormFields.map((f, i) => {
+        const lbl = document.getElementById(`adm_field_label_${i}`).value;
+        const typ = document.getElementById(`adm_field_type_${i}`).value;
+        const req = document.getElementById(`adm_field_req_${i}`).checked;
+        const optsRaw = document.getElementById(`adm_field_opts_${i}`) ? document.getElementById(`adm_field_opts_${i}`).value : '';
+        const opts = optsRaw ? optsRaw.split(',').map(o => o.trim()).filter(Boolean) : [];
+
+        return {
+          id: f.id || ("field_" + i),
+          label: lbl || "Field Label",
+          type: typ,
+          placeholder: `Enter ${lbl}`,
+          options: opts,
+          required: req
+        };
+      });
+    }
+
+    if (siteData.subjects && siteData.subjects.length > 0) {
+      siteData.subjects = siteData.subjects.map((s, i) => {
+        const t = document.getElementById(`subj_title_${i}`);
+        const d = document.getElementById(`subj_desc_${i}`);
+        return {
+          title: t ? t.value : s.title,
+          desc: d ? d.value : s.desc
+        };
+      });
+    }
+
+    saveData();
+    renderSite();
+    closeAdmin();
+    showToast('Admin Changes Saved & Synced Successfully!');
+  } catch (err) {
+    console.error("Save Error:", err);
+    showToast('Error saving changes. Please check inputs.', true);
+  }
+}
+
+function escapeHtml(str) { return String(str).replace(/[&<>"']/g, ''); }
+
+window.addEventListener('storage', function(e) {
+  if (e.key === 'tuitionFullData_v6') {
+    siteData = JSON.parse(e.newValue);
+    renderSite();
+    showToast('Portal updated by Admin in real-time!');
+  }
+});
+
+/* BACKGROUND CANVAS ANIMATION */
+const canvas = document.getElementById('allSubjectsCanvas');
+const ctx = canvas.getContext('2d');
+let floatingItems = [];
+
+const subjectSymbols = [
+  { text: '∑', color: '#E0A96D' }, { text: 'π', color: '#34D399' }, { text: '√x', color: '#FB7185' },
+  { text: 'H₂O', color: '#38BDF8' }, { text: 'E=mc²', color: '#F59E0B' }, { text: '∫', color: '#C084FC' },
+  { text: '💻', color: '#60A5FA' }, { text: '⚙️', color: '#9CA3AF' }, { text: '</>', color: '#34D399' }, { text: '🐍', color: '#4ADE80' },
+  { text: '📚', color: '#F43F5E' }, { text: '✍️', color: '#FB923C' }, { text: '📖', color: '#A78BFA' },
+  { text: '🌍', color: '#22C55E' }, { text: '🏛️', color: '#EAB308' }, { text: '📜', color: '#D97706' }
+];
+
+function initCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  floatingItems = [];
+
+  for(let i = 0; i < 40; i++) {
+    const symbolObj = subjectSymbols[Math.floor(Math.random() * subjectSymbols.length)];
+    floatingItems.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      text: symbolObj.text,
+      color: symbolObj.color,
+      size: Math.random() * 24 + 22,
+      speedX: (Math.random() - 0.5) * 0.8,
+      speedY: (Math.random() - 0.5) * 0.8,
+      opacity: Math.random() * 0.35 + 0.15
+    });
+  }
+}
+
+function animateCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  floatingItems.forEach(item => {
+    item.x += item.speedX;
+    item.y += item.speedY;
+
+    if(item.x < -40) item.x = canvas.width + 40;
+    if(item.x > canvas.width + 40) item.x = -40;
+    if(item.y < -40) item.y = canvas.height + 40;
+    if(item.y > canvas.height + 40) item.y = -40;
+
+    ctx.save();
+    ctx.globalAlpha = item.opacity;
+    ctx.font = `bold ${item.size}px 'Fraunces', sans-serif`;
+    ctx.fillStyle = item.color;
+    ctx.shadowColor = item.color;
+    ctx.shadowBlur = 10;
+    ctx.fillText(item.text, item.x, item.y);
+    ctx.restore();
+  });
+  requestAnimationFrame(animateCanvas);
+}
+
+window.addEventListener('resize', initCanvas);
+initCanvas();
+animateCanvas();
+
+loadData();
+</script>
+</body>
+</html>
