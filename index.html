@@ -176,7 +176,7 @@
 <div id="noticeBar" class="notice-bar"></div>
 <div id="toastContainer" class="toast-container"></div>
 
-<!-- 0. LOADING SCREEN (shown until Firebase gives us real data) -->
+<!-- 0. LOADING SCREEN -->
 <div id="loadingScreen">
   <div class="spinner" id="loadingSpinner"></div>
   <p style="font-size:0.85rem; color:var(--text-muted); font-weight:600;" id="loadingText">Connecting to server...</p>
@@ -460,21 +460,11 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getDatabase, ref, set, onValue, get, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-  // ============================================================
-  // ⚠️ IMPORTANT: Replace this with YOUR OWN Firebase project config.
-  // Go to console.firebase.google.com → create a project → Realtime Database
-  // → Project Settings → Your apps → Web app (</>) → copy the config below.
-  // The config that was here before belonged to a DIFFERENT project
-  // ("geo-motors"), which is why writes/sync were unreliable.
-  // ============================================================
   const firebaseConfig = {
     apiKey: "AIzaSyBgO6-xr_CRwtlgWg2rjrGRHDRsI8i12vo",
     authDomain: "al-tution.firebaseapp.com",
-    // ⚠️ If Realtime Database was created in a non-default region, replace
-    // this line with the exact URL shown at the top of Firebase Console →
-    // Build → Realtime Database (it may end in .firebasedatabase.app instead).
     databaseURL: "https://al-tution-default-rtdb.firebaseio.com",
     projectId: "al-tution",
     storageBucket: "al-tution.firebasestorage.app",
@@ -488,8 +478,6 @@
   window.firebaseDb = db;
   window.dbRef = ref;
   window.dbSet = set;
-  window.dbOnValue = onValue;
-  window.dbGet = get;
 
   let firstDataReceived = false;
   let firstUsersReceived = false;
@@ -504,30 +492,24 @@
     }
   }
 
-  // If Firebase never responds within 8 seconds (wrong databaseURL, no
-  // internet, database not created, blocked rules, etc.) show a clear
-  // error instead of hanging on the spinner forever.
   const connectTimeoutId = setTimeout(() => {
     if (!readyFired && typeof window.showConnectError === 'function') {
-      window.showConnectError('Server did not respond. Double-check your Firebase databaseURL and Rules, or your internet connection.');
+      window.showConnectError('Server did not respond. Double-check your connection.');
     }
   }, 8000);
   window.clearConnectTimeout = () => clearTimeout(connectTimeoutId);
 
-  // Real-time listener for tuitionData — this fires immediately on connect,
-  // and again every single time ANY device writes a change. That's the
-  // core of the live-sync: every admin save is pushed to every open tab/device.
+  // REALTIME DATA LISTENER (FIRES EVERY TIME ANY DEVICE SAVES)
   const siteConfigRef = ref(db, 'tuitionData');
   onValue(siteConfigRef, (snapshot) => {
     const data = snapshot.val();
     if (data) {
       window.siteData = data;
+      localStorage.setItem('tuitionDataLocal', JSON.stringify(data));
     } else if (!firstDataReceived) {
-      // Nothing in the DB yet at all — seed it with defaults (first run only)
+      // ONLY seed if database node is completely empty
       window.siteData = JSON.parse(JSON.stringify(window.DEFAULT_DATA));
-      if (typeof window.saveDataToFirebase === 'function') {
-        window.saveDataToFirebase(window.siteData);
-      }
+      set(ref(db, 'tuitionData'), window.siteData);
     }
     firstDataReceived = true;
     if (typeof window.renderSite === 'function') window.renderSite();
@@ -536,9 +518,6 @@
   }, (error) => {
     console.warn("Firebase sync notice:", error);
     if (typeof window.setSyncStatus === 'function') window.setSyncStatus(false);
-    if (typeof window.showConnectError === 'function') {
-      window.showConnectError('Firebase error: ' + (error && error.message ? error.message : error) + ' — check your databaseURL and Rules.');
-    }
     const local = localStorage.getItem('tuitionDataLocal');
     if (local && !firstDataReceived) {
       window.siteData = JSON.parse(local);
@@ -548,7 +527,7 @@
     markReadyIfBothLoaded();
   });
 
-  // Real-time listener for registered users (signup/login live sync across devices)
+  // REALTIME USERS LISTENER
   const usersRef = ref(db, 'tuitionUsers');
   onValue(usersRef, (snapshot) => {
     const data = snapshot.val();
@@ -556,15 +535,10 @@
     firstUsersReceived = true;
     markReadyIfBothLoaded();
   }, (error) => {
-    console.warn("Users sync notice:", error);
-    if (typeof window.showConnectError === 'function') {
-      window.showConnectError('Firebase error: ' + (error && error.message ? error.message : error) + ' — check your databaseURL and Rules.');
-    }
     firstUsersReceived = true;
     markReadyIfBothLoaded();
   });
 
-  // Expose a promise-returning writer so calling code can know if a write truly succeeded
   window.fbSet = function(path, value) {
     return set(ref(db, path), value);
   };
@@ -657,9 +631,6 @@ window.showConnectError = function(message) {
   if (msgEl) msgEl.textContent = message;
 };
 
-// This runs ONCE, only after Firebase has actually delivered real data
-// (or genuinely failed and we fell back to local cache). This is what
-// stops devices from briefly flashing stale/default content before sync.
 window.onFirebaseReady = function() {
   document.getElementById('loadingScreen').style.display = 'none';
   loadData();
@@ -713,7 +684,6 @@ document.getElementById('signupForm').addEventListener('submit', function(e){
     return;
   }
 
-  // Prevent duplicate signup with same number across devices
   const existing = (window.registeredUsers || []).find(u => String(u.id) === String(userId));
   if (existing) {
     showToast('This phone number is already registered. Please login instead.', true);
@@ -876,10 +846,6 @@ function renderSite() {
   renderDynamicAdmissionFields();
   renderAdmissionSubjectsCheckboxes();
 
-  // If the admin panel happens to be open on this device when new data
-  // arrives from another device, refresh its fields too (without wiping
-  // whatever the admin is actively mid-typing would be an edge case,
-  // but this keeps counters/lists in sync while panel is open+idle).
   if (document.getElementById('adminPanel').classList.contains('show')) {
     renderAdminAdmissionFields();
     renderAdminSubjects();
@@ -1001,7 +967,7 @@ document.getElementById('studentReviewForm').addEventListener('submit', function
     })
     .catch((err) => {
       console.error(err);
-      siteData.reviews.shift(); // rollback local change since it didn't actually save
+      siteData.reviews.shift();
       showToast('Could not submit review — check your internet connection.', true);
     })
     .finally(() => {
@@ -1295,11 +1261,11 @@ function saveAllAdmin() {
     saveData()
       .then(() => {
         closeAdmin();
-        showToast('Admin Changes Saved & Synced Live to All Devices!');
+        showToast('Admin Changes Saved & Synced Live!');
       })
       .catch((err) => {
         console.error("Save Error:", err);
-        showToast('Save failed — check your internet connection and try again.', true);
+        showToast('Save failed — check your connection.', true);
       })
       .finally(() => {
         btn.disabled = false;
@@ -1375,10 +1341,6 @@ function animateCanvas() {
 window.addEventListener('resize', initCanvas);
 initCanvas();
 animateCanvas();
-
-// NOTE: loadData() is now called automatically from window.onFirebaseReady()
-// once real data has arrived from Firebase — not immediately on page load.
-// This is the key fix for devices showing stale/out-of-sync content.
 </script>
 </body>
 </html>
