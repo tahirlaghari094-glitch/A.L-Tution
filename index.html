@@ -2,7 +2,7 @@
 <html lang="ur" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Araiz Ahmed — Home & Online Private Tuition</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -28,73 +28,71 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
-  h1, h2, h3 { font-family: 'Fraunces', serif; color: var(--primary); }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; width: 100%; }
+  h1, h2, h3 { font-family: 'Fraunces', serif; color: var(--primary); word-break: break-word; }
   a { text-decoration: none; color: inherit; }
-  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 16px; width: 100%; }
 
   #allSubjectsCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; }
-  .notice-bar { background: var(--accent); color: var(--primary); font-weight: 600; text-align: center; padding: 8px 16px; font-size: 0.88rem; display: none; position: relative; z-index: 101; }
+  .notice-bar { background: var(--accent); color: var(--primary); font-weight: 600; text-align: center; padding: 8px 12px; font-size: 0.82rem; display: none; position: relative; z-index: 101; word-wrap: break-word; }
 
-  .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-  .toast { background: var(--primary); color: #fff; padding: 14px 22px; border-radius: 12px; font-size: 0.9rem; font-weight: 500; box-shadow: var(--shadow-3d); border-left: 5px solid var(--accent); opacity: 0; transform: translateY(20px); transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; }
+  .toast-container { position: fixed; bottom: 16px; right: 16px; left: 16px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  .toast { background: var(--primary); color: #fff; padding: 12px 18px; border-radius: 12px; font-size: 0.85rem; font-weight: 500; box-shadow: var(--shadow-3d); border-left: 5px solid var(--accent); opacity: 0; transform: translateY(20px); transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; pointer-events: auto; }
   .toast.show { opacity: 1; transform: translateY(0); }
   .toast.error { border-left-color: var(--danger); }
 
-  #authScreen { position: fixed; inset: 0; z-index: 999; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 20px; }
-  .auth-card { background: var(--card-bg); width: 100%; max-width: 440px; padding: 36px; border-radius: var(--radius); box-shadow: var(--shadow-3d); border: 1px solid var(--line); text-align: center; }
-  .auth-tabs { display: flex; gap: 8px; margin-bottom: 24px; background: rgba(0,0,0,0.04); padding: 4px; border-radius: 30px; }
-  .auth-tab { flex: 1; padding: 10px; border: none; background: none; font-weight: 600; cursor: pointer; border-radius: 20px; transition: all 0.3s; }
+  #authScreen { position: fixed; inset: 0; z-index: 999; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 16px; overflow-y: auto; }
+  .auth-card { background: var(--card-bg); width: 100%; max-width: 420px; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-3d); border: 1px solid var(--line); text-align: center; margin: auto; }
+  .auth-tabs { display: flex; gap: 6px; margin-bottom: 20px; background: rgba(0,0,0,0.04); padding: 4px; border-radius: 30px; }
+  .auth-tab { flex: 1; padding: 10px 6px; border: none; background: none; font-weight: 600; cursor: pointer; border-radius: 20px; transition: all 0.3s; font-size: 0.9rem; }
   .auth-tab.active { background: var(--primary); color: #fff; }
 
-  #appScreen { display: none; }
+  #appScreen { display: none; width: 100%; }
 
-  header { position: sticky; top: 0; z-index: 100; background: rgba(250, 248, 245, 0.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
-  .nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; gap: 12px; position: relative; }
-  .logo { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.3rem; color: var(--primary); display: flex; align-items: center; gap: 12px; }
+  header { position: sticky; top: 0; z-index: 100; background: rgba(250, 248, 245, 0.95); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); width: 100%; }
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; gap: 8px; position: relative; width: 100%; }
+  .logo { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.15rem; color: var(--primary); display: flex; align-items: center; gap: 8px; white-space: nowrap; }
   
-  .logo-img-container { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; background: var(--primary); display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent); flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.12); }
+  .logo-img-container { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: var(--primary); display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent); flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.12); }
   .logo-img-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .logo-img-container .mark { color: var(--accent); font-weight: 700; font-size: 1.15rem; }
+  .logo-img-container .mark { color: var(--accent); font-weight: 700; font-size: 1rem; }
   
-  .nav-links { display: flex; gap: 6px; background: rgba(0,0,0,0.03); padding: 4px; border-radius: 30px; border: 1px solid var(--line); align-items: center; }
-  .nav-links a { padding: 8px 16px; border-radius: 20px; font-size: 0.88rem; font-weight: 500; color: var(--text-muted); transition: all 0.3s ease; }
+  .nav-links { display: flex; gap: 4px; background: rgba(0,0,0,0.03); padding: 4px; border-radius: 30px; border: 1px solid var(--line); align-items: center; }
+  .nav-links a { padding: 8px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); transition: all 0.3s ease; }
   .nav-links a.active { background: var(--primary); color: #fff; font-weight: 600; }
   
-  .right-corner-group { display: flex; align-items: center; gap: 10px; margin-left: auto; position: relative; }
-  .admin-top-btn { background: var(--primary); color: var(--accent); border: 1px solid var(--accent); padding: 7px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 5px; }
+  .right-corner-group { display: flex; align-items: center; gap: 6px; margin-left: auto; position: relative; }
+  .admin-top-btn { background: var(--primary); color: var(--accent); border: 1px solid var(--accent); padding: 6px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
   .admin-top-btn:hover { background: var(--primary-light); }
 
-  .hamburger { display: none; font-size: 1.5rem; background: var(--card-bg); border: 1px solid var(--line); cursor: pointer; color: var(--primary); width: 38px; height: 38px; border-radius: 50%; align-items: center; justify-content: center; transition: all 0.2s; }
-  .hamburger:hover { background: var(--accent-glow); }
-
-  .nav-controls { display: flex; gap: 10px; align-items: center; }
-  .theme-btn { background: var(--card-bg); border: 1px solid var(--line); width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+  .hamburger { display: none; font-size: 1.3rem; background: var(--card-bg); border: 1px solid var(--line); cursor: pointer; color: var(--primary); width: 36px; height: 36px; border-radius: 50%; align-items: center; justify-content: center; flex-shrink: 0; }
   
-  .user-badge { font-size: 0.85rem; font-weight: 700; background: var(--accent-glow); color: var(--primary); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--accent); display: flex; align-items: center; gap: 6px; }
+  .nav-controls { display: flex; gap: 6px; align-items: center; }
+  .theme-btn { background: var(--card-bg); border: 1px solid var(--line); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   
-  .logout-btn { background: var(--danger); color: white; border: none; padding: 7px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-  .logout-btn:hover { background: #C53030; }
+  .user-badge { font-size: 0.78rem; font-weight: 700; background: var(--accent-glow); color: var(--primary); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--accent); display: flex; align-items: center; gap: 4px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  
+  .logout-btn { background: var(--danger); color: white; border: none; padding: 6px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; flex-shrink: 0; }
 
   @media (max-width: 920px) {
     .hamburger { display: flex; }
     .nav-links { 
       position: absolute; 
-      top: 55px; 
+      top: 52px; 
       right: 0; 
-      left: auto;
-      width: 210px;
+      left: 0;
+      width: 100%;
       background: var(--card-bg); 
       flex-direction: column; 
-      padding: 10px; 
+      padding: 12px; 
       display: none; 
-      border-radius: var(--radius); 
+      border-radius: 0 0 var(--radius) var(--radius); 
       box-shadow: var(--shadow-3d); 
       border: 1px solid var(--line);
       z-index: 150;
       align-items: stretch;
     }
-    .nav-links a { text-align: left; padding: 10px 14px; width: 100%; border-radius: 10px; }
+    .nav-links a { text-align: center; padding: 12px; width: 100%; border-radius: 10px; font-size: 0.95rem; }
     .nav-links.open { display: flex; animation: slideDown 0.25s ease-out forwards; }
   }
 
@@ -103,51 +101,60 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .page-section { display: none; padding: 60px 0; min-height: 80vh; animation: fadeIn 0.4s ease-in-out forwards; position: relative; z-index: 1; }
+  .page-section { display: none; padding: 32px 0; min-height: 80vh; animation: fadeIn 0.4s ease-in-out forwards; position: relative; z-index: 1; }
   .page-section.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  .form-group { margin-bottom: 16px; text-align: left; }
-  .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
-  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 0.95rem; font-family: inherit; }
+  .form-group { margin-bottom: 14px; text-align: left; }
+  .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 0.9rem; font-family: inherit; -webkit-appearance: none; }
 
-  .checkbox-group { display: flex; flex-direction: column; gap: 8px; background: var(--bg); padding: 12px; border-radius: 8px; border: 1px solid var(--line); max-height: 160px; overflow-y: auto; }
-  .checkbox-item { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; cursor: pointer; }
+  .checkbox-group { display: flex; flex-direction: column; gap: 8px; background: var(--bg); padding: 10px; border-radius: 8px; border: 1px solid var(--line); max-height: 150px; overflow-y: auto; }
+  .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer; }
   .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
 
-  .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #fff; padding: 12px 28px; border-radius: 30px; font-weight: 600; border: none; cursor: pointer; transition: all 0.3s; display: inline-block; }
-  .btn-accent { background: linear-gradient(135deg, var(--accent) 0%, #B88244 100%); color: #fff; padding: 12px 28px; border-radius: 30px; font-weight: 600; border: none; cursor: pointer; transition: all 0.3s; display: inline-block; }
+  .btn-primary, .btn-accent { display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 30px; font-weight: 600; border: none; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; width: 100%; max-width: 280px; text-align: center; }
+  .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #fff; }
+  .btn-accent { background: linear-gradient(135deg, var(--accent) 0%, #B88244 100%); color: #fff; }
 
-  .hero { text-align: center; max-width: 850px; margin: 0 auto; }
-  .hero h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.15; margin: 16px 0; }
+  .hero { text-align: center; max-width: 850px; margin: 0 auto; padding: 10px 0; }
+  .hero-badge-wrap { display: inline-block; margin-bottom: 12px; }
+  .hero-badge-wrap span { background: var(--accent-glow); color: var(--primary); padding: 6px 14px; border-radius: 30px; font-size: 0.78rem; font-weight: 600; border: 1px solid var(--accent); display: inline-block; word-break: break-word; }
+  .hero h1 { font-size: clamp(1.8rem, 6vw, 3.2rem); line-height: 1.25; margin: 12px 0; }
   .hero h1 span { color: var(--accent); }
+  .hero-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
   
-  .grid-3d { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 30px; }
-  .card-item { background: var(--card-bg); padding: 26px; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow-3d); transition: all 0.3s ease; }
-  .card-item:hover { transform: translateY(-5px); }
+  .grid-3d { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 24px; }
+  .card-item { background: var(--card-bg); padding: 20px; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow-3d); transition: all 0.3s ease; word-break: break-word; }
 
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 40px; text-align: center; }
-  .stat-card { background: var(--card-bg); padding: 20px; border-radius: var(--radius); border: 1px solid var(--line); }
-  .stat-card .num { font-size: 2rem; font-weight: 700; color: var(--accent); font-family: 'Fraunces', serif; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-top: 30px; text-align: center; }
+  .stat-card { background: var(--card-bg); padding: 16px 10px; border-radius: var(--radius); border: 1px solid var(--line); }
+  .stat-card .num { font-size: 1.6rem; font-weight: 700; color: var(--accent); font-family: 'Fraunces', serif; }
 
-  .contact-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
-  .c-btn { padding: 12px 26px; border-radius: 30px; font-weight: 600; color: white; display: flex; align-items: center; gap: 8px; }
+  .contact-btns { display: flex; flex-direction: column; gap: 12px; justify-content: center; align-items: center; margin-top: 24px; width: 100%; }
+  .c-btn { width: 100%; max-width: 320px; padding: 12px 20px; border-radius: 30px; font-weight: 600; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
   .c-btn.wa { background: #25D366; }
   .c-btn.call { background: var(--primary); }
   .c-btn.mail { background: #EA4335; }
 
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 500; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 500; display: none; align-items: center; justify-content: center; padding: 16px; overflow-y: auto; }
   .modal-overlay.show { display: flex; }
-  .modal-box { background: #fff; padding: 32px; border-radius: var(--radius); max-width: 500px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto; }
-  .close-modal { position: absolute; top: 18px; right: 20px; background: none; border: none; font-size: 1.4rem; cursor: pointer; }
+  .modal-box { background: #fff; padding: 24px 18px; border-radius: var(--radius); max-width: 480px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto; margin: auto; }
+  .close-modal { position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
 
-  .admin-panel { position: fixed; inset: 0; background: #FAF8F5; z-index: 600; display: none; overflow-y: auto; padding: 30px 20px; }
+  .admin-panel { position: fixed; inset: 0; background: #FAF8F5; z-index: 600; display: none; overflow-y: auto; padding: 20px 12px; }
   .admin-panel.show { display: block; }
-  .admin-sec { background: #fff; padding: 24px; border-radius: var(--radius); border: 1px solid var(--line); margin-bottom: 24px; }
+  .admin-sec { background: #fff; padding: 18px 14px; border-radius: var(--radius); border: 1px solid var(--line); margin-bottom: 16px; }
   
-  .admin-field-row { background: var(--bg); padding: 12px; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .admin-field-row { background: var(--bg); padding: 10px; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
 
-  footer { background: var(--primary); color: #fff; text-align: center; padding: 30px 0; font-size: 0.9rem; position: relative; z-index: 10; }
+  footer { background: var(--primary); color: #fff; text-align: center; padding: 24px 16px; font-size: 0.82rem; position: relative; z-index: 10; margin-top: 40px; }
+  
+  @media (min-width: 600px) {
+    .btn-primary, .btn-accent { width: auto; }
+    .contact-btns { flex-direction: row; flex-wrap: wrap; }
+    .c-btn { width: auto; }
+  }
 </style>
 </head>
 <body>
@@ -159,8 +166,8 @@
 <!-- 1. AUTH SCREEN -->
 <div id="authScreen">
   <div class="auth-card">
-    <div style="font-family:'Fraunces', serif; font-size:1.8rem; font-weight:700; color:var(--primary); margin-bottom:6px;">Tuition Portal</div>
-    <p style="font-size: 0.85rem; color:var(--text-muted); margin-bottom: 20px;">Student & Teacher Official Portal</p>
+    <div style="font-family:'Fraunces', serif; font-size:1.6rem; font-weight:700; color:var(--primary); margin-bottom:4px;">Tuition Portal</div>
+    <p style="font-size: 0.8rem; color:var(--text-muted); margin-bottom: 18px;">Student & Teacher Official Portal</p>
 
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuthMode('login')">Login</button>
@@ -176,7 +183,7 @@
         <label>Password</label>
         <input type="password" id="loginPass" placeholder="••••••••" required>
       </div>
-      <button type="submit" class="btn-primary" style="width: 100%;">Login to Portal 🚀</button>
+      <button type="submit" class="btn-primary" style="width: 100%; max-width: 100%;">Login to Portal 🚀</button>
     </form>
 
     <form id="signupForm" style="display: none;">
@@ -192,11 +199,11 @@
         <label>Create Password</label>
         <input type="password" id="signupPass" placeholder="••••••••" required>
       </div>
-      <button type="submit" class="btn-accent" style="width: 100%;">Create Account ✨</button>
+      <button type="submit" class="btn-accent" style="width: 100%; max-width: 100%;">Create Account ✨</button>
     </form>
 
-    <div style="margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px;">
-      <button onclick="guestLogin()" style="background:none; border:none; color:var(--accent); font-weight:600; cursor:pointer; font-size:0.88rem;">⏩ Continue as Guest</button>
+    <div style="margin-top: 18px; border-top: 1px solid var(--line); padding-top: 12px;">
+      <button onclick="guestLogin()" style="background:none; border:none; color:var(--accent); font-weight:600; cursor:pointer; font-size:0.85rem;">⏩ Continue as Guest</button>
     </div>
   </div>
 </div>
@@ -237,10 +244,10 @@
   <!-- HOME PAGE -->
   <section id="page-home" class="page-section wrap active">
     <div class="hero">
-      <span id="heroBadge" style="background:var(--accent-glow); color:var(--primary); padding:6px 18px; border-radius:30px; font-size:0.85rem; font-weight:600; border:1px solid var(--accent);">📍 Home Tuition & Online Classes</span>
+      <div class="hero-badge-wrap"><span id="heroBadge">📍 Home Tuition & Online Classes</span></div>
       <h1 id="heroTitle">Personalized Coaching That <span>Guarantees Results</span></h1>
-      <p id="heroSub" style="color:var(--text-muted); font-size:1.1rem; margin-bottom:24px;">Individualized focus, patient explanations, and conceptual mastery built around your child's pace.</p>
-      <div>
+      <p id="heroSub" style="color:var(--text-muted); font-size:0.95rem; margin-bottom:20px;">Individualized focus, patient explanations, and conceptual mastery built around your child's pace.</p>
+      <div class="hero-btns">
         <button class="btn-accent" onclick="openAdmissionModal()">🎓 Apply for Admission</button>
         <button class="btn-primary" onclick="switchPage('contact')">💬 Contact Teacher</button>
       </div>
@@ -253,8 +260,8 @@
   <section id="page-subjects" class="page-section wrap">
     <div style="text-align: center;">
       <h2>Subjects Taught</h2>
-      <p style="color: var(--text-muted);">Math, Science, English, CS & Humanities for Matric, Inter & O/A Levels.</p>
-      <input type="text" id="subjSearch" oninput="filterSubjects()" placeholder="🔍 Search subject name..." style="max-width:400px; padding:10px; margin-top:15px; border-radius:20px; border:1px solid var(--line);">
+      <p style="color: var(--text-muted); font-size: 0.88rem;">Math, Science, English, CS & Humanities for Matric, Inter & O/A Levels.</p>
+      <input type="text" id="subjSearch" oninput="filterSubjects()" placeholder="🔍 Search subject name..." style="max-width:100%; width: 320px; padding:10px 14px; margin-top:14px; border-radius:20px; border:1px solid var(--line); font-size:0.88rem;">
     </div>
     <div class="grid-3d" id="subjectsGrid"></div>
   </section>
@@ -263,7 +270,7 @@
   <section id="page-about" class="page-section wrap">
     <div class="card-item" style="max-width: 800px; margin: 0 auto;">
       <h2 id="aboutTitleDisplay">About the Teacher</h2>
-      <p id="aboutContentDisplay" style="margin-top: 15px; color: var(--text-muted); white-space: pre-line;"></p>
+      <p id="aboutContentDisplay" style="margin-top: 12px; color: var(--text-muted); font-size: 0.9rem; white-space: pre-line;"></p>
     </div>
   </section>
 
@@ -271,8 +278,8 @@
   <section id="page-fee" class="page-section wrap">
     <div class="card-item" style="text-align: center; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #fff;">
       <h2 style="color: #fff;">Transparent Monthly Fee</h2>
-      <div style="font-size: 3.5rem; font-family: 'Fraunces', serif; color: var(--accent); margin: 15px 0;">
-        Rs. <span id="feeAmount">3,000</span><span style="font-size: 1.2rem; color: #fff;">/month</span>
+      <div style="font-size: 2.8rem; font-family: 'Fraunces', serif; color: var(--accent); margin: 12px 0;">
+        Rs. <span id="feeAmount">3,000</span><span style="font-size: 1rem; color: #fff;">/month</span>
       </div>
       <button class="btn-accent" onclick="openAdmissionModal()">Book Admission Now</button>
     </div>
@@ -280,9 +287,9 @@
 
   <!-- REVIEWS PAGE -->
   <section id="page-reviews" class="page-section wrap">
-    <div style="text-align: center; max-width: 600px; margin: 0 auto 30px auto;">
+    <div style="text-align: center; max-width: 600px; margin: 0 auto 20px auto;">
       <h2>Student & Parent Reviews</h2>
-      <p style="color: var(--text-muted);">Read existing feedback or post your own review below!</p>
+      <p style="color: var(--text-muted); font-size: 0.88rem;">Read existing feedback or post your own review below!</p>
       <button class="btn-accent" style="margin-top: 12px;" onclick="openReviewModal()">✍️ Write a Review</button>
     </div>
     <div class="grid-3d" id="reviewsGrid"></div>
@@ -311,7 +318,7 @@
   <div class="modal-box">
     <button class="close-modal" onclick="closeReviewModal()">&times;</button>
     <h3>Write Your Review</h3>
-    <form id="studentReviewForm" style="margin-top:15px;">
+    <form id="studentReviewForm" style="margin-top:14px;">
       <div class="form-group">
         <label>Your Name / Role</label>
         <input type="text" id="revAuthor" placeholder="Enter your full name or role (e.g. Hamza - Grade 10)" required>
@@ -320,7 +327,7 @@
         <label>Your Experience / Review</label>
         <textarea id="revContent" rows="4" placeholder="Type your honest experience about teaching quality..." required></textarea>
       </div>
-      <button type="submit" class="btn-primary" style="width: 100%;">Submit Review 🌟</button>
+      <button type="submit" class="btn-primary" style="width: 100%; max-width: 100%;">Submit Review 🌟</button>
     </form>
   </div>
 </div>
@@ -330,8 +337,7 @@
   <div class="modal-box">
     <button class="close-modal" onclick="closeAdmissionModal()">&times;</button>
     <h3>Student Admission Request</h3>
-    <form id="admissionForm" style="margin-top:15px;">
-      <!-- Dynamic Form Fields Container -->
+    <form id="admissionForm" style="margin-top:14px;">
       <div id="dynamicAdmissionFieldsContainer"></div>
 
       <div class="form-group">
@@ -339,109 +345,108 @@
         <div class="checkbox-group" id="admSubjectCheckboxContainer"></div>
       </div>
 
-      <button type="submit" class="btn-accent" style="width: 100%;">Send Request via WhatsApp 🚀</button>
+      <button type="submit" class="btn-accent" style="width: 100%; max-width: 100%;">Send Request via WhatsApp 🚀</button>
     </form>
   </div>
 </div>
 
 <!-- ADMIN LOGIN MODAL -->
 <div class="modal-overlay" id="loginModal">
-  <div class="modal-box" style="max-width: 360px; text-align: center;">
+  <div class="modal-box" style="max-width: 340px; text-align: center;">
     <button class="close-modal" onclick="closeLogin()">&times;</button>
     <h3>Admin Login</h3>
-    <p style="font-size:0.85rem; margin:10px 0;">Enter Security PIN (Default: 123)</p>
-    <input type="password" id="pinInput" placeholder="Enter PIN code" style="text-align:center; font-size:1.4rem; padding:8px; width:100%; margin-bottom:10px;">
-    <button class="btn-primary" style="width: 100%;" onclick="attemptLogin()">Unlock Panel</button>
+    <p style="font-size:0.8rem; margin:8px 0;">Enter Security PIN (Default: 123)</p>
+    <input type="password" id="pinInput" placeholder="Enter PIN code" style="text-align:center; font-size:1.3rem; padding:8px; width:100%; margin-bottom:12px;">
+    <button class="btn-primary" style="width: 100%; max-width: 100%;" onclick="attemptLogin()">Unlock Panel</button>
   </div>
 </div>
 
 <!-- ADMIN CONTROL PANEL -->
 <div class="admin-panel" id="adminPanel">
   <div class="wrap">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
       <h2>Admin Control Panel</h2>
-      <button class="btn-primary" onclick="closeAdmin()">Close Panel</button>
+      <button class="btn-primary" style="width:auto; padding:8px 16px;" onclick="closeAdmin()">Close</button>
     </div>
 
     <!-- Profile Pic Upload -->
     <div class="admin-sec">
-      <h3>Profile Picture & Logo (Auto Compressed)</h3>
-      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">Upload image here. Images are automatically optimized so they save smoothly.</p>
+      <h3>Profile Picture & Logo</h3>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Upload image here.</p>
       <div class="form-group">
-        <label>Upload Photo from Device</label>
+        <label>Upload Photo</label>
         <input type="file" id="in_profilePic" accept="image/*" onchange="handleProfilePicUpload(event)">
       </div>
-      <div style="display:flex; align-items:center; gap:15px; margin-top:10px;">
-        <div class="logo-img-container" style="width:60px; height:60px;" id="adminPreviewContainer">
+      <div style="display:flex; align-items:center; gap:12px; margin-top:10px;">
+        <div class="logo-img-container" style="width:50px; height:50px;" id="adminPreviewContainer">
           <span class="mark" id="adminPreviewInitials">AA</span>
         </div>
-        <button type="button" onclick="removeProfilePic()" style="color:var(--danger); background:none; border:none; cursor:pointer; font-weight:600;">Remove Picture (Use Text Initials)</button>
+        <button type="button" onclick="removeProfilePic()" style="color:var(--danger); background:none; border:none; cursor:pointer; font-weight:600; font-size:0.82rem;">Remove Picture</button>
       </div>
     </div>
 
-    <!-- Dynamic Admission Form Editor (NEW) -->
+    <!-- Dynamic Admission Form Editor -->
     <div class="admin-sec">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <h3>Admission Form Questions Editor</h3>
-        <button type="button" class="btn-accent" onclick="addAdmissionFormField()">+ Add Form Question</button>
+        <h3>Admission Form Questions</h3>
+        <button type="button" class="btn-accent" style="width:auto; padding:6px 12px; font-size:0.8rem;" onclick="addAdmissionFormField()">+ Add</button>
       </div>
-      <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">Customize fields asked from students in the admission popup modal.</p>
       <div id="adminAdmissionFieldsList"></div>
     </div>
 
     <!-- Stats Editor -->
     <div class="admin-sec">
       <h3>Stats Counter Editor</h3>
-      <div class="form-group"><label>Students Taught</label><input type="text" id="in_statStudents" placeholder="e.g. 100+"></div>
-      <div class="form-group"><label>Success Rate</label><input type="text" id="in_statSuccess" placeholder="e.g. 95%"></div>
-      <div class="form-group"><label>Teaching Experience</label><input type="text" id="in_statExp" placeholder="e.g. 5+ Yrs"></div>
+      <div class="form-group"><label>Students Taught</label><input type="text" id="in_statStudents"></div>
+      <div class="form-group"><label>Success Rate</label><input type="text" id="in_statSuccess"></div>
+      <div class="form-group"><label>Teaching Experience</label><input type="text" id="in_statExp"></div>
     </div>
 
     <!-- Announcement Banner -->
     <div class="admin-sec">
       <h3>Announcement Banner</h3>
-      <div class="form-group" style="display:flex; gap:10px; align-items:center; margin-top:10px;">
-        <input type="checkbox" id="in_noticeShow" style="width:auto;"> <label for="in_noticeShow" style="margin:0;">Show Announcement Banner</label>
+      <div class="form-group" style="display:flex; gap:8px; align-items:center; margin-top:8px;">
+        <input type="checkbox" id="in_noticeShow" style="width:auto;"> <label for="in_noticeShow" style="margin:0;">Show Banner</label>
       </div>
-      <div class="form-group"><label>Notice Text</label><input type="text" id="in_noticeText" placeholder="Enter banner announcement text"></div>
+      <div class="form-group"><label>Notice Text</label><input type="text" id="in_noticeText"></div>
     </div>
 
     <!-- Basic Site Info -->
     <div class="admin-sec">
       <h3>Basic Site Info</h3>
-      <div class="form-group"><label>Teacher Name</label><input type="text" id="in_teacherName" placeholder="Enter teacher name"></div>
-      <div class="form-group"><label>Initials (Fallback Logo)</label><input type="text" id="in_initials" placeholder="e.g. AA"></div>
-      <div class="form-group"><label>Phone Number</label><input type="text" id="in_phone" placeholder="e.g. 03123456789"></div>
-      <div class="form-group"><label>Email</label><input type="text" id="in_email" placeholder="e.g. email@domain.com"></div>
-      <div class="form-group"><label>Monthly Fee</label><input type="text" id="in_feeAmount" placeholder="e.g. 3,000"></div>
-      <div class="form-group"><label>Security PIN</label><input type="text" id="in_pin" placeholder="Enter admin panel PIN"></div>
+      <div class="form-group"><label>Teacher Name</label><input type="text" id="in_teacherName"></div>
+      <div class="form-group"><label>Initials</label><input type="text" id="in_initials"></div>
+      <div class="form-group"><label>Phone Number</label><input type="text" id="in_phone"></div>
+      <div class="form-group"><label>Email</label><input type="text" id="in_email"></div>
+      <div class="form-group"><label>Monthly Fee</label><input type="text" id="in_feeAmount"></div>
+      <div class="form-group"><label>Security PIN</label><input type="text" id="in_pin"></div>
     </div>
 
     <!-- Hero Controls -->
     <div class="admin-sec">
-      <h3>Hero Section Editor</h3>
-      <div class="form-group"><label>Top Tagline Badge</label><input type="text" id="in_heroBadge" placeholder="Enter top badge text"></div>
-      <div class="form-group"><label>Main Heading</label><input type="text" id="in_heroTitle" placeholder="Enter main hero heading"></div>
-      <div class="form-group"><label>Subtitle Text</label><textarea id="in_heroSub" placeholder="Enter hero subtext"></textarea></div>
+      <h3>Hero Section</h3>
+      <div class="form-group"><label>Top Badge</label><input type="text" id="in_heroBadge"></div>
+      <div class="form-group"><label>Heading</label><input type="text" id="in_heroTitle"></div>
+      <div class="form-group"><label>Subtitle</label><textarea id="in_heroSub" rows="3"></textarea></div>
     </div>
 
     <!-- About Me Editor -->
     <div class="admin-sec">
-      <h3>About Me Editor</h3>
-      <div class="form-group"><label>Section Title</label><input type="text" id="in_aboutTitle" placeholder="Enter section title"></div>
-      <div class="form-group"><label>Section Content</label><textarea id="in_aboutContent" rows="5" placeholder="Enter about details"></textarea></div>
+      <h3>About Me</h3>
+      <div class="form-group"><label>Title</label><input type="text" id="in_aboutTitle"></div>
+      <div class="form-group"><label>Content</label><textarea id="in_aboutContent" rows="4"></textarea></div>
     </div>
 
     <!-- Subjects Manager -->
     <div class="admin-sec">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
         <h3>Subjects Manager</h3>
-        <button type="button" class="btn-accent" onclick="addSubjectItem()">+ Add Subject</button>
+        <button type="button" class="btn-accent" style="width:auto; padding:6px 12px; font-size:0.8rem;" onclick="addSubjectItem()">+ Add Subject</button>
       </div>
-      <div id="adminSubjectsList" style="margin-top:15px;"></div>
+      <div id="adminSubjectsList"></div>
     </div>
 
-    <button type="button" class="btn-accent" style="width: 100%; padding: 16px; font-size:1.05rem;" onclick="saveAllAdmin()">💾 Save & Sync All Changes</button>
+    <button type="button" class="btn-accent" style="width: 100%; max-width:100%; padding: 14px; font-size:1rem;" onclick="saveAllAdmin()">💾 Save Changes</button>
   </div>
 </div>
 
@@ -676,7 +681,7 @@ function renderSite() {
   statsBox.innerHTML = (siteData.stats || []).map(st => `
     <div class="stat-card">
       <div class="num">${escapeHtml(st.num)}</div>
-      <div style="color:var(--text-muted); font-size:0.9rem;">${escapeHtml(st.label)}</div>
+      <div style="color:var(--text-muted); font-size:0.8rem;">${escapeHtml(st.label)}</div>
     </div>
   `).join('');
 
@@ -696,7 +701,7 @@ function renderSubjectsList(list) {
   subjGrid.innerHTML = list.map(s => `
     <div class="card-item">
       <h3>📖 ${escapeHtml(s.title)}</h3>
-      <p style="margin-top: 10px; color: var(--text-muted);">${escapeHtml(s.desc)}</p>
+      <p style="margin-top: 8px; color: var(--text-muted); font-size:0.88rem;">${escapeHtml(s.desc)}</p>
     </div>
   `).join('');
 }
@@ -773,8 +778,8 @@ function renderReviewsList() {
   const revGrid = document.getElementById('reviewsGrid');
   revGrid.innerHTML = (siteData.reviews || []).map(r => `
     <div class="card-item">
-      <p>"${escapeHtml(r.text)}"</p>
-      <b style="display: block; margin-top: 12px; color: var(--primary);">- ${escapeHtml(r.name)}</b>
+      <p style="font-size:0.88rem;">"${escapeHtml(r.text)}"</p>
+      <b style="display: block; margin-top: 8px; color: var(--primary); font-size:0.85rem;">- ${escapeHtml(r.name)}</b>
     </div>
   `).join('');
 }
@@ -942,15 +947,14 @@ function fillAdminForm() {
   renderAdminSubjects();
 }
 
-/* ADMISSION FORM ADMIN EDITOR */
 function renderAdminAdmissionFields() {
   const container = document.getElementById('adminAdmissionFieldsList');
   const fields = siteData.admissionFormFields || [];
 
   container.innerHTML = fields.map((f, i) => `
     <div class="admin-field-row">
-      <div style="display:flex; gap:10px; align-items:center;">
-        <input type="text" id="adm_field_label_${i}" value="${escapeHtml(f.label)}" placeholder="Question / Field Title (e.g. City Name)">
+      <div style="display:flex; gap:6px; flex-direction:column;">
+        <input type="text" id="adm_field_label_${i}" value="${escapeHtml(f.label)}" placeholder="Question Title">
         <select id="adm_field_type_${i}" onchange="toggleAdminSelectOptions(${i})">
           <option value="text" ${f.type==='text'?'selected':''}>Text Input</option>
           <option value="tel" ${f.type==='tel'?'selected':''}>Phone/Number</option>
@@ -959,12 +963,12 @@ function renderAdminAdmissionFields() {
       </div>
 
       <div id="adm_field_opts_wrap_${i}" style="display:${f.type==='select'?'block':'none'};">
-        <input type="text" id="adm_field_opts_${i}" value="${escapeHtml((f.options || []).join(', '))}" placeholder="Dropdown options separated by comma (e.g. Home Tuition, Online)">
+        <input type="text" id="adm_field_opts_${i}" value="${escapeHtml((f.options || []).join(', '))}" placeholder="Options (separated by comma)">
       </div>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem;">
-        <label><input type="checkbox" id="adm_field_req_${i}" ${f.required?'checked':''}> Required Field</label>
-        <button type="button" onclick="deleteAdmissionFormField(${i})" style="color:var(--danger); background:none; border:none; cursor:pointer;">🗑 Delete Field</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem;">
+        <label><input type="checkbox" id="adm_field_req_${i}" ${f.required?'checked':''}> Required</label>
+        <button type="button" onclick="deleteAdmissionFormField(${i})" style="color:var(--danger); background:none; border:none; cursor:pointer;">🗑 Delete</button>
       </div>
     </div>
   `).join('');
@@ -995,10 +999,10 @@ function deleteAdmissionFormField(index) {
 function renderAdminSubjects() {
   const container = document.getElementById('adminSubjectsList');
   container.innerHTML = (siteData.subjects || []).map((s, i) => `
-    <div style="background: var(--bg); padding: 12px; margin-bottom: 8px; border-radius: 8px; border:1px solid var(--line);">
-      <input type="text" id="subj_title_${i}" value="${escapeHtml(s.title)}" placeholder="Enter subject title" style="margin-bottom:6px; font-weight:600;">
-      <textarea id="subj_desc_${i}" rows="2" placeholder="Enter subject description">${escapeHtml(s.desc)}</textarea>
-      <button type="button" onclick="deleteSubjectItem(${i})" style="color:var(--danger); background:none; border:none; cursor:pointer; margin-top:4px;">🗑 Delete Subject</button>
+    <div style="background: var(--bg); padding: 10px; margin-bottom: 8px; border-radius: 8px; border:1px solid var(--line);">
+      <input type="text" id="subj_title_${i}" value="${escapeHtml(s.title)}" placeholder="Subject title" style="margin-bottom:6px; font-weight:600;">
+      <textarea id="subj_desc_${i}" rows="2" placeholder="Subject description">${escapeHtml(s.desc)}</textarea>
+      <button type="button" onclick="deleteSubjectItem(${i})" style="color:var(--danger); background:none; border:none; cursor:pointer; margin-top:4px; font-size:0.8rem;">🗑 Delete Subject</button>
     </div>
   `).join('');
 }
@@ -1040,7 +1044,6 @@ function saveAllAdmin() {
     siteData.aboutTitle = document.getElementById('in_aboutTitle').value;
     siteData.aboutContent = document.getElementById('in_aboutContent').value;
 
-    // Save Admission Form Fields
     if (siteData.admissionFormFields) {
       siteData.admissionFormFields = siteData.admissionFormFields.map((f, i) => {
         const lbl = document.getElementById(`adm_field_label_${i}`).value;
@@ -1074,10 +1077,10 @@ function saveAllAdmin() {
     saveData();
     renderSite();
     closeAdmin();
-    showToast('Admin Changes Saved & Synced Successfully!');
+    showToast('Admin Changes Saved!');
   } catch (err) {
     console.error("Save Error:", err);
-    showToast('Error saving changes. Please check inputs.', true);
+    showToast('Error saving changes.', true);
   }
 }
 
@@ -1087,7 +1090,7 @@ window.addEventListener('storage', function(e) {
   if (e.key === 'tuitionFullData_v6') {
     siteData = JSON.parse(e.newValue);
     renderSite();
-    showToast('Portal updated by Admin in real-time!');
+    showToast('Portal updated in real-time!');
   }
 });
 
@@ -1109,17 +1112,19 @@ function initCanvas() {
   canvas.height = window.innerHeight;
   floatingItems = [];
 
-  for(let i = 0; i < 40; i++) {
+  const count = window.innerWidth < 600 ? 20 : 40;
+
+  for(let i = 0; i < count; i++) {
     const symbolObj = subjectSymbols[Math.floor(Math.random() * subjectSymbols.length)];
     floatingItems.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       text: symbolObj.text,
       color: symbolObj.color,
-      size: Math.random() * 24 + 22,
-      speedX: (Math.random() - 0.5) * 0.8,
-      speedY: (Math.random() - 0.5) * 0.8,
-      opacity: Math.random() * 0.35 + 0.15
+      size: Math.random() * 18 + 16,
+      speedX: (Math.random() - 0.5) * 0.6,
+      speedY: (Math.random() - 0.5) * 0.6,
+      opacity: Math.random() * 0.3 + 0.1
     });
   }
 }
@@ -1140,7 +1145,7 @@ function animateCanvas() {
     ctx.font = `bold ${item.size}px 'Fraunces', sans-serif`;
     ctx.fillStyle = item.color;
     ctx.shadowColor = item.color;
-    ctx.shadowBlur = 10;
+    ctx.shadowBlur = 8;
     ctx.fillText(item.text, item.x, item.y);
     ctx.restore();
   });
