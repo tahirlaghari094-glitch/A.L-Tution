@@ -656,7 +656,7 @@ function saveDataToFirebase(data) {
 window.saveDataToFirebase = saveDataToFirebase;
 
 function saveData() {
-  return saveDataToFirebase(siteData);
+  return saveDataToFirebase(window.siteData);
 }
 
 function switchAuthMode(mode) {
@@ -728,7 +728,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e){
 
   const validUser = (window.registeredUsers || []).find(u => String(u.id) === String(userId) && String(u.pass) === String(pass));
 
-  if(validUser || userId === (siteData.phone || '').replace(/[^0-9]/g, '')) {
+  if(validUser || userId === (window.siteData.phone || '').replace(/[^0-9]/g, '')) {
     loggedUser = { name: validUser ? validUser.name : "Student", id: userId };
     localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
     showToast('Welcome back!');
@@ -800,48 +800,48 @@ function rotateTheme() {
 
 function renderSite() {
   const nb = document.getElementById('noticeBar');
-  if(siteData.noticeShow && siteData.noticeText) {
+  if(window.siteData.noticeShow && window.siteData.noticeText) {
     nb.style.display = 'block';
-    nb.textContent = siteData.noticeText;
+    nb.textContent = window.siteData.noticeText;
   } else {
     nb.style.display = 'none';
   }
 
   const headerLogoWrapper = document.getElementById('globalHeaderLogo');
-  if(siteData.profilePic) {
-    headerLogoWrapper.innerHTML = `<img src="${siteData.profilePic}" alt="Teacher Profile">`;
+  if(window.siteData.profilePic) {
+    headerLogoWrapper.innerHTML = `<img src="${window.siteData.profilePic}" alt="Teacher Profile">`;
   } else {
-    headerLogoWrapper.innerHTML = `<span class="mark" id="headerInitials">${escapeHtml(siteData.initials || "AA")}</span>`;
+    headerLogoWrapper.innerHTML = `<span class="mark" id="headerInitials">${escapeHtml(window.siteData.initials || "AA")}</span>`;
   }
 
-  document.getElementById('navName').textContent = siteData.teacherName;
-  document.getElementById('feeAmount').textContent = siteData.feeAmount;
-  document.getElementById('footName').textContent = siteData.teacherName;
+  document.getElementById('navName').textContent = window.siteData.teacherName;
+  document.getElementById('feeAmount').textContent = window.siteData.feeAmount;
+  document.getElementById('footName').textContent = window.siteData.teacherName;
   document.getElementById('yearNow').textContent = new Date().getFullYear();
 
-  document.getElementById('heroBadge').textContent = siteData.heroBadge;
-  document.getElementById('heroTitle').innerHTML = siteData.heroTitle;
-  document.getElementById('heroSub').textContent = siteData.heroSub;
+  document.getElementById('heroBadge').textContent = window.siteData.heroBadge;
+  document.getElementById('heroTitle').innerHTML = window.siteData.heroTitle;
+  document.getElementById('heroSub').textContent = window.siteData.heroSub;
 
-  document.getElementById('aboutTitleDisplay').textContent = siteData.aboutTitle || "About the Teacher";
-  document.getElementById('aboutContentDisplay').textContent = siteData.aboutContent || "";
+  document.getElementById('aboutTitleDisplay').textContent = window.siteData.aboutTitle || "About the Teacher";
+  document.getElementById('aboutContentDisplay').textContent = window.siteData.aboutContent || "";
 
   const statsBox = document.getElementById('statsDisplay');
-  statsBox.innerHTML = (siteData.stats || []).map(st => `
+  statsBox.innerHTML = (window.siteData.stats || []).map(st => `
     <div class="stat-card">
       <div class="num">${escapeHtml(st.num)}</div>
       <div style="color:var(--text-muted); font-size:0.8rem;">${escapeHtml(st.label)}</div>
     </div>
   `).join('');
 
-  let cPhone = siteData.phone ? siteData.phone.replace(/[^0-9]/g, '') : '03113787131';
+  let cPhone = window.siteData.phone ? window.siteData.phone.replace(/[^0-9]/g, '') : '03113787131';
   if (cPhone.startsWith('0')) {
     cPhone = '92' + cPhone.substring(1);
   }
   document.getElementById('linkWA').href = `https://wa.me/${cPhone}`;
-  document.getElementById('linkCall').href = `tel:${siteData.phone}`;
+  document.getElementById('linkCall').href = `tel:${window.siteData.phone}`;
 
-  renderSubjectsList(siteData.subjects || []);
+  renderSubjectsList(window.siteData.subjects || []);
   renderReviewsList();
   renderDynamicAdmissionFields();
   renderAdmissionSubjectsCheckboxes();
@@ -867,7 +867,7 @@ function renderDynamicAdmissionFields() {
   const container = document.getElementById('dynamicAdmissionFieldsContainer');
   if (!container) return;
 
-  const fields = siteData.admissionFormFields || [];
+  const fields = window.siteData.admissionFormFields || [];
   let html = '';
 
   fields.forEach(f => {
@@ -908,7 +908,7 @@ function renderAdmissionSubjectsCheckboxes() {
     <hr style="border: 0; border-top: 1px solid var(--line); margin: 4px 0;">
   `;
 
-  (siteData.subjects || []).forEach((s) => {
+  (window.siteData.subjects || []).forEach((s) => {
     html += `
       <label class="checkbox-item">
         <input type="checkbox" class="adm-subj-chk" value="${escapeHtml(s.title)}">
@@ -927,13 +927,13 @@ function toggleSelectAllSubjects(master) {
 
 function filterSubjects() {
   const query = document.getElementById('subjSearch').value.toLowerCase();
-  const filtered = (siteData.subjects || []).filter(s => s.title.toLowerCase().includes(query) || s.desc.toLowerCase().includes(query));
+  const filtered = (window.siteData.subjects || []).filter(s => s.title.toLowerCase().includes(query) || s.desc.toLowerCase().includes(query));
   renderSubjectsList(filtered);
 }
 
 function renderReviewsList() {
   const revGrid = document.getElementById('reviewsGrid');
-  revGrid.innerHTML = (siteData.reviews || []).map(r => `
+  revGrid.innerHTML = (window.siteData.reviews || []).map(r => `
     <div class="card-item">
       <p style="font-size:0.88rem;">"${escapeHtml(r.text)}"</p>
       <b style="display: block; margin-top: 8px; color: var(--primary); font-size:0.85rem;">- ${escapeHtml(r.name)}</b>
@@ -956,8 +956,8 @@ document.getElementById('studentReviewForm').addEventListener('submit', function
   btn.disabled = true;
   btn.textContent = 'Submitting...';
 
-  if(!siteData.reviews) siteData.reviews = [];
-  siteData.reviews.unshift({ text: content, name: author });
+  if(!window.siteData.reviews) window.siteData.reviews = [];
+  window.siteData.reviews.unshift({ text: content, name: author });
 
   saveData()
     .then(() => {
@@ -967,7 +967,7 @@ document.getElementById('studentReviewForm').addEventListener('submit', function
     })
     .catch((err) => {
       console.error(err);
-      siteData.reviews.shift();
+      window.siteData.reviews.shift();
       showToast('Could not submit review — check your internet connection.', true);
     })
     .finally(() => {
@@ -980,7 +980,7 @@ function openAdmissionModal() {
   renderDynamicAdmissionFields();
   
   if(loggedUser && loggedUser.name !== "Guest Student") {
-    const firstField = siteData.admissionFormFields ? siteData.admissionFormFields[0] : null;
+    const firstField = window.siteData.admissionFormFields ? window.siteData.admissionFormFields[0] : null;
     if (firstField && document.getElementById(`dyn_${firstField.id}`)) {
       document.getElementById(`dyn_${firstField.id}`).value = loggedUser.name;
     }
@@ -994,7 +994,7 @@ document.getElementById('admissionForm').addEventListener('submit', function(e) 
   e.preventDefault();
 
   let msgLines = ["*New Student Admission Request*", ""];
-  const fields = siteData.admissionFormFields || [];
+  const fields = window.siteData.admissionFormFields || [];
 
   for (let f of fields) {
     const el = document.getElementById(`dyn_${f.id}`);
@@ -1025,7 +1025,7 @@ document.getElementById('admissionForm').addEventListener('submit', function(e) 
   msgLines.push(`📖 *Subjects Required:* ${selectedSubjects.join(', ')}`);
 
   const msg = encodeURIComponent(msgLines.join('\n'));
-  let cPhone = siteData.phone ? siteData.phone.replace(/[^0-9]/g, '') : '03113787131';
+  let cPhone = window.siteData.phone ? window.siteData.phone.replace(/[^0-9]/g, '') : '03113787131';
   if (cPhone.startsWith('0')) {
     cPhone = '92' + cPhone.substring(1);
   }
@@ -1038,7 +1038,7 @@ function openLogin() { document.getElementById('loginModal').classList.add('show
 function closeLogin() { document.getElementById('loginModal').classList.remove('show'); }
 
 function attemptLogin() {
-  if(document.getElementById('pinInput').value === siteData.pin) {
+  if(document.getElementById('pinInput').value === window.siteData.pin) {
     closeLogin();
     fillAdminForm();
     document.getElementById('adminPanel').classList.add('show');
@@ -1097,27 +1097,27 @@ function updateAdminPreview(picSrc, initials) {
 }
 
 function fillAdminForm() {
-  tempProfilePic = siteData.profilePic;
-  updateAdminPreview(tempProfilePic, siteData.initials);
+  tempProfilePic = window.siteData.profilePic;
+  updateAdminPreview(tempProfilePic, window.siteData.initials);
 
-  document.getElementById('in_statStudents').value = siteData.stats ? siteData.stats[0]?.num : "100+";
-  document.getElementById('in_statSuccess').value = siteData.stats ? siteData.stats[1]?.num : "95%";
-  document.getElementById('in_statExp').value = siteData.stats ? siteData.stats[2]?.num : "5+ Yrs";
+  document.getElementById('in_statStudents').value = window.siteData.stats ? window.siteData.stats[0]?.num : "100+";
+  document.getElementById('in_statSuccess').value = window.siteData.stats ? window.siteData.stats[1]?.num : "95%";
+  document.getElementById('in_statExp').value = window.siteData.stats ? window.siteData.stats[2]?.num : "5+ Yrs";
 
-  document.getElementById('in_noticeShow').checked = siteData.noticeShow || false;
-  document.getElementById('in_noticeText').value = siteData.noticeText || "";
-  document.getElementById('in_teacherName').value = siteData.teacherName || "";
-  document.getElementById('in_initials').value = siteData.initials || "AA";
-  document.getElementById('in_phone').value = siteData.phone || "03113787131";
-  document.getElementById('in_feeAmount').value = siteData.feeAmount || "";
-  document.getElementById('in_pin').value = siteData.pin || "123";
+  document.getElementById('in_noticeShow').checked = window.siteData.noticeShow || false;
+  document.getElementById('in_noticeText').value = window.siteData.noticeText || "";
+  document.getElementById('in_teacherName').value = window.siteData.teacherName || "";
+  document.getElementById('in_initials').value = window.siteData.initials || "AA";
+  document.getElementById('in_phone').value = window.siteData.phone || "03113787131";
+  document.getElementById('in_feeAmount').value = window.siteData.feeAmount || "";
+  document.getElementById('in_pin').value = window.siteData.pin || "123";
 
-  document.getElementById('in_heroBadge').value = siteData.heroBadge || "";
-  document.getElementById('in_heroTitle').value = siteData.heroTitle || "";
-  document.getElementById('in_heroSub').value = siteData.heroSub || "";
+  document.getElementById('in_heroBadge').value = window.siteData.heroBadge || "";
+  document.getElementById('in_heroTitle').value = window.siteData.heroTitle || "";
+  document.getElementById('in_heroSub').value = window.siteData.heroSub || "";
 
-  document.getElementById('in_aboutTitle').value = siteData.aboutTitle || "";
-  document.getElementById('in_aboutContent').value = siteData.aboutContent || "";
+  document.getElementById('in_aboutTitle').value = window.siteData.aboutTitle || "";
+  document.getElementById('in_aboutContent').value = window.siteData.aboutContent || "";
 
   renderAdminAdmissionFields();
   renderAdminSubjects();
@@ -1125,7 +1125,7 @@ function fillAdminForm() {
 
 function renderAdminAdmissionFields() {
   const container = document.getElementById('adminAdmissionFieldsList');
-  const fields = siteData.admissionFormFields || [];
+  const fields = window.siteData.admissionFormFields || [];
 
   container.innerHTML = fields.map((f, i) => `
     <div class="admin-field-row">
@@ -1156,8 +1156,8 @@ function toggleAdminSelectOptions(i) {
 }
 
 function addAdmissionFormField() {
-  if(!siteData.admissionFormFields) siteData.admissionFormFields = [];
-  siteData.admissionFormFields.push({
+  if(!window.siteData.admissionFormFields) window.siteData.admissionFormFields = [];
+  window.siteData.admissionFormFields.push({
     id: "custom_" + Date.now(),
     label: "New Question",
     type: "text",
@@ -1168,13 +1168,13 @@ function addAdmissionFormField() {
 }
 
 function deleteAdmissionFormField(index) {
-  siteData.admissionFormFields.splice(index, 1);
+  window.siteData.admissionFormFields.splice(index, 1);
   renderAdminAdmissionFields();
 }
 
 function renderAdminSubjects() {
   const container = document.getElementById('adminSubjectsList');
-  container.innerHTML = (siteData.subjects || []).map((s, i) => `
+  container.innerHTML = (window.siteData.subjects || []).map((s, i) => `
     <div style="background: var(--bg); padding: 10px; margin-bottom: 8px; border-radius: 8px; border:1px solid var(--line);">
       <input type="text" id="subj_title_${i}" value="${escapeHtml(s.title)}" placeholder="Subject title" style="margin-bottom:6px; font-weight:600;">
       <textarea id="subj_desc_${i}" rows="2" placeholder="Subject description">${escapeHtml(s.desc)}</textarea>
@@ -1184,13 +1184,13 @@ function renderAdminSubjects() {
 }
 
 function addSubjectItem() {
-  if(!siteData.subjects) siteData.subjects = [];
-  siteData.subjects.push({ title: "New Subject", desc: "Subject Description..." });
+  if(!window.siteData.subjects) window.siteData.subjects = [];
+  window.siteData.subjects.push({ title: "New Subject", desc: "Subject Description..." });
   renderAdminSubjects();
 }
 
 function deleteSubjectItem(index) {
-  siteData.subjects.splice(index, 1);
+  window.siteData.subjects.splice(index, 1);
   renderAdminSubjects();
 }
 
@@ -1200,31 +1200,31 @@ function saveAllAdmin() {
   btn.textContent = '💾 Saving...';
 
   try {
-    siteData.profilePic = tempProfilePic;
+    window.siteData.profilePic = tempProfilePic;
 
-    siteData.stats = [
+    window.siteData.stats = [
       { num: document.getElementById('in_statStudents').value, label: "Students Taught" },
       { num: document.getElementById('in_statSuccess').value, label: "Success Rate" },
       { num: document.getElementById('in_statExp').value, label: "Teaching Experience" }
     ];
 
-    siteData.noticeShow = document.getElementById('in_noticeShow').checked;
-    siteData.noticeText = document.getElementById('in_noticeText').value;
-    siteData.teacherName = document.getElementById('in_teacherName').value;
-    siteData.initials = document.getElementById('in_initials').value;
-    siteData.phone = document.getElementById('in_phone').value;
-    siteData.feeAmount = document.getElementById('in_feeAmount').value;
-    siteData.pin = document.getElementById('in_pin').value;
+    window.siteData.noticeShow = document.getElementById('in_noticeShow').checked;
+    window.siteData.noticeText = document.getElementById('in_noticeText').value;
+    window.siteData.teacherName = document.getElementById('in_teacherName').value;
+    window.siteData.initials = document.getElementById('in_initials').value;
+    window.siteData.phone = document.getElementById('in_phone').value;
+    window.siteData.feeAmount = document.getElementById('in_feeAmount').value;
+    window.siteData.pin = document.getElementById('in_pin').value;
 
-    siteData.heroBadge = document.getElementById('in_heroBadge').value;
-    siteData.heroTitle = document.getElementById('in_heroTitle').value;
-    siteData.heroSub = document.getElementById('in_heroSub').value;
+    window.siteData.heroBadge = document.getElementById('in_heroBadge').value;
+    window.siteData.heroTitle = document.getElementById('in_heroTitle').value;
+    window.siteData.heroSub = document.getElementById('in_heroSub').value;
 
-    siteData.aboutTitle = document.getElementById('in_aboutTitle').value;
-    siteData.aboutContent = document.getElementById('in_aboutContent').value;
+    window.siteData.aboutTitle = document.getElementById('in_aboutTitle').value;
+    window.siteData.aboutContent = document.getElementById('in_aboutContent').value;
 
-    if (siteData.admissionFormFields) {
-      siteData.admissionFormFields = siteData.admissionFormFields.map((f, i) => {
+    if (window.siteData.admissionFormFields) {
+      window.siteData.admissionFormFields = window.siteData.admissionFormFields.map((f, i) => {
         const lblEl = document.getElementById(`adm_field_label_${i}`);
         const typEl = document.getElementById(`adm_field_type_${i}`);
         const reqEl = document.getElementById(`adm_field_req_${i}`);
@@ -1247,8 +1247,8 @@ function saveAllAdmin() {
       });
     }
 
-    if (siteData.subjects && siteData.subjects.length > 0) {
-      siteData.subjects = siteData.subjects.map((s, i) => {
+    if (window.siteData.subjects && window.siteData.subjects.length > 0) {
+      window.siteData.subjects = window.siteData.subjects.map((s, i) => {
         const t = document.getElementById(`subj_title_${i}`);
         const d = document.getElementById(`subj_desc_${i}`);
         return {
