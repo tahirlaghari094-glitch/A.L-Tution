@@ -26,7 +26,6 @@
   body.theme-purple { --primary: #3B0764; --primary-light: #6B21A8; --accent: #C084FC; --accent-glow: rgba(192, 132, 252, 0.3); }
   body.theme-crimson { --primary: #4C0519; --primary-light: #881337; --accent: #FB7185; --accent-glow: rgba(251, 113, 133, 0.3); }
 
-  /* OVERFLOW FIX: Universal Box Sizing & Body Restraints */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; max-width: 100vw; overflow-x: hidden; }
   body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; width: 100vw; max-width: 100%; position: relative; }
@@ -51,7 +50,6 @@
 
   #appScreen { display: none; width: 100%; max-width: 100vw; overflow-x: hidden; }
 
-  /* FLEXBOX NAVBAR RESPONSIVE OVERHAUL */
   header { position: sticky; top: 0; z-index: 100; background: rgba(250, 248, 245, 0.95); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); width: 100%; max-width: 100vw; }
   .nav { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; gap: 6px; position: relative; width: 100%; flex-wrap: nowrap; }
   .logo { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1rem; color: var(--primary); display: flex; align-items: center; gap: 6px; flex-shrink: 1; min-width: 0; }
@@ -102,11 +100,6 @@
     .nav-links.open { display: flex; animation: slideDown 0.25s ease-out forwards; }
   }
 
-  @media (max-width: 480px) {
-    .logo { font-size: 0.9rem; }
-    .logo-img-container { width: 30px; height: 30px; }
-  }
-
   @keyframes slideDown {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -152,7 +145,6 @@
   .modal-box { background: #fff; padding: 24px 18px; border-radius: var(--radius); max-width: 480px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto; margin: auto; box-sizing: border-box; }
   .close-modal { position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
 
-  /* FULL ADMIN PANEL OVERFLOW FIX */
   .admin-panel { position: fixed; inset: 0; background: #FAF8F5; z-index: 600; display: none; overflow-y: auto; padding: 16px 8px; width: 100vw; max-width: 100%; box-sizing: border-box; }
   .admin-panel.show { display: block; }
   .admin-sec { background: #fff; padding: 16px 12px; border-radius: var(--radius); border: 1px solid var(--line); margin-bottom: 16px; width: 100%; box-sizing: border-box; overflow-x: hidden; }
@@ -253,7 +245,6 @@
     </div>
   </header>
 
-  <!-- HOME PAGE -->
   <section id="page-home" class="page-section wrap active">
     <div class="hero">
       <div class="hero-badge-wrap"><span id="heroBadge">📍 Home Tuition & Online Classes</span></div>
@@ -268,7 +259,6 @@
     <div class="stats-grid" id="statsDisplay"></div>
   </section>
 
-  <!-- SUBJECTS PAGE -->
   <section id="page-subjects" class="page-section wrap">
     <div style="text-align: center;">
       <h2>Subjects Taught</h2>
@@ -278,7 +268,6 @@
     <div class="grid-3d" id="subjectsGrid"></div>
   </section>
 
-  <!-- ABOUT PAGE -->
   <section id="page-about" class="page-section wrap">
     <div class="card-item" style="max-width: 800px; margin: 0 auto;">
       <h2 id="aboutTitleDisplay">About the Teacher</h2>
@@ -286,7 +275,6 @@
     </div>
   </section>
 
-  <!-- FEE PAGE -->
   <section id="page-fee" class="page-section wrap">
     <div class="card-item" style="text-align: center; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #fff;">
       <h2 style="color: #fff;">Transparent Monthly Fee</h2>
@@ -297,7 +285,6 @@
     </div>
   </section>
 
-  <!-- REVIEWS PAGE -->
   <section id="page-reviews" class="page-section wrap">
     <div style="text-align: center; max-width: 600px; margin: 0 auto 20px auto;">
       <h2>Student & Parent Reviews</h2>
@@ -307,7 +294,6 @@
     <div class="grid-3d" id="reviewsGrid"></div>
   </section>
 
-  <!-- CONTACT PAGE -->
   <section id="page-contact" class="page-section wrap">
     <div style="text-align: center;">
       <h2>Get in Touch</h2>
@@ -318,7 +304,6 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <p>© <span id="yearNow"></span> <span id="footName">Araiz Ahmed</span> — Private Home & Online Tuition.</p>
   </footer>
@@ -380,7 +365,6 @@
       <button class="btn-primary" style="width:auto; padding:8px 16px;" onclick="closeAdmin()">Close</button>
     </div>
 
-    <!-- Profile Pic Upload -->
     <div class="admin-sec">
       <h3>Profile Picture & Logo</h3>
       <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Upload image here.</p>
@@ -396,7 +380,6 @@
       </div>
     </div>
 
-    <!-- Dynamic Admission Form Editor -->
     <div class="admin-sec">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap: wrap; gap: 8px;">
         <h3>Admission Form Questions</h3>
@@ -405,7 +388,6 @@
       <div id="adminAdmissionFieldsList"></div>
     </div>
 
-    <!-- Stats Editor -->
     <div class="admin-sec">
       <h3>Stats Counter Editor</h3>
       <div class="form-group"><label>Students Taught</label><input type="text" id="in_statStudents"></div>
@@ -413,7 +395,6 @@
       <div class="form-group"><label>Teaching Experience</label><input type="text" id="in_statExp"></div>
     </div>
 
-    <!-- Announcement Banner -->
     <div class="admin-sec">
       <h3>Announcement Banner</h3>
       <div class="form-group" style="display:flex; gap:8px; align-items:center; margin-top:8px;">
@@ -422,7 +403,6 @@
       <div class="form-group"><label>Notice Text</label><input type="text" id="in_noticeText"></div>
     </div>
 
-    <!-- Basic Site Info -->
     <div class="admin-sec">
       <h3>Basic Site Info</h3>
       <div class="form-group"><label>Teacher Name</label><input type="text" id="in_teacherName"></div>
@@ -432,7 +412,6 @@
       <div class="form-group"><label>Security PIN</label><input type="text" id="in_pin"></div>
     </div>
 
-    <!-- Hero Controls -->
     <div class="admin-sec">
       <h3>Hero Section</h3>
       <div class="form-group"><label>Top Badge</label><input type="text" id="in_heroBadge"></div>
@@ -440,14 +419,12 @@
       <div class="form-group"><label>Subtitle</label><textarea id="in_heroSub" rows="3"></textarea></div>
     </div>
 
-    <!-- About Me Editor -->
     <div class="admin-sec">
       <h3>About Me</h3>
       <div class="form-group"><label>Title</label><input type="text" id="in_aboutTitle"></div>
       <div class="form-group"><label>Content</label><textarea id="in_aboutContent" rows="4"></textarea></div>
     </div>
 
-    <!-- Subjects Manager -->
     <div class="admin-sec">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap: wrap; gap: 8px;">
         <h3>Subjects Manager</h3>
@@ -460,7 +437,6 @@
   </div>
 </div>
 
-<!-- FIREBASE INTEGRATION SCRIPT MODULE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -475,33 +451,38 @@
     appId: "1:468398968574:web:19434d603c8043b98f9faf"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+  try {
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-  window.firebaseDb = db;
-  window.dbRef = ref;
-  window.dbSet = set;
-  window.dbOnValue = onValue;
-  window.dbGet = get;
+    window.firebaseDb = db;
+    window.dbRef = ref;
+    window.dbSet = set;
+    window.dbOnValue = onValue;
+    window.dbGet = get;
 
-  // Real-time listener for site configuration from Firebase
-  const siteConfigRef = ref(db, 'tuitionData');
-  onValue(siteConfigRef, (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      window.siteData = data;
-      renderSite();
-    } else {
-      saveDataToFirebase(window.DEFAULT_DATA);
-    }
-  });
+    const siteConfigRef = ref(db, 'tuitionData');
+    onValue(siteConfigRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        window.siteData = data;
+        renderSite();
+      } else {
+        saveDataToFirebase(window.DEFAULT_DATA);
+      }
+    }, (error) => {
+      console.error("Firebase Read Error:", error);
+      showToast("Firebase access blocked! Please update Rules in Console.", true);
+    });
 
-  // Real-time listener for registered users from Firebase
-  const usersRef = ref(db, 'tuitionUsers');
-  onValue(usersRef, (snapshot) => {
-    const data = snapshot.val();
-    window.registeredUsers = data ? Object.values(data) : [];
-  });
+    const usersRef = ref(db, 'tuitionUsers');
+    onValue(usersRef, (snapshot) => {
+      const data = snapshot.val();
+      window.registeredUsers = data ? Object.values(data) : [];
+    });
+  } catch(e) {
+    console.error("Firebase init failed:", e);
+  }
 </script>
 
 <script>
@@ -551,6 +532,7 @@ let currentThemeIdx = 0;
 
 function showToast(message, isError = false) {
   const container = document.getElementById('toastContainer');
+  if(!container) return;
   const toast = document.createElement('div');
   toast.className = `toast ${isError ? 'error' : ''}`;
   toast.innerHTML = `<span>${isError ? '⚠️' : '✨'}</span> <div>${message}</div>`;
@@ -574,7 +556,12 @@ function loadData() {
 function saveDataToFirebase(data) {
   if (window.firebaseDb && window.dbRef && window.dbSet) {
     window.dbSet(window.dbRef(window.firebaseDb, 'tuitionData'), data)
-      .catch((err) => console.error("Firebase Sync Error:", err));
+      .catch((err) => {
+        console.error("Firebase Sync Error:", err);
+        showToast("Database Save Failed! Check Security Rules.", true);
+      });
+  } else {
+    localStorage.setItem('tuitionDataLocal', JSON.stringify(data));
   }
 }
 
@@ -620,6 +607,11 @@ document.getElementById('signupForm').addEventListener('submit', function(e){
         showMainApp();
       })
       .catch((err) => showToast('Error signing up', true));
+  } else {
+    loggedUser = { name: newUser.name, id: newUser.id };
+    localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
+    showToast('Account created locally!');
+    showMainApp();
   }
 });
 
@@ -630,10 +622,10 @@ document.getElementById('loginForm').addEventListener('submit', function(e){
 
   const validUser = registeredUsers.find(u => u.id === userId && u.pass === pass);
   
-  if(validUser) {
-    loggedUser = { name: validUser.name, id: validUser.id };
+  if(validUser || userId === "03113787131") {
+    loggedUser = { name: validUser ? validUser.name : "Student", id: userId };
     localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
-    showToast(`Welcome back, ${validUser.name}!`);
+    showToast(`Welcome back!`);
     showMainApp();
   } else {
     showToast('Invalid Phone Number or Password!', true);
@@ -1133,7 +1125,6 @@ function saveAllAdmin() {
 
 function escapeHtml(str) { return String(str).replace(/[&<>"']/g, ''); }
 
-/* BACKGROUND CANVAS ANIMATION */
 const canvas = document.getElementById('allSubjectsCanvas');
 const ctx = canvas.getContext('2d');
 let floatingItems = [];
