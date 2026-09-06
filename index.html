@@ -460,6 +460,50 @@
   </div>
 </div>
 
+<!-- FIREBASE INTEGRATION SCRIPT MODULE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAUHX2QecQML9cGGl0EDCBj8P7qyOh5cLM",
+    authDomain: "geo-motors-365days-3938c.firebaseapp.com",
+    databaseURL: "https://geo-motors-365days-3938c-default-rtdb.firebaseio.com",
+    projectId: "geo-motors-365days-3938c",
+    storageBucket: "geo-motors-365days-3938c.firebasestorage.app",
+    messagingSenderId: "468398968574",
+    appId: "1:468398968574:web:19434d603c8043b98f9faf"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.firebaseDb = db;
+  window.dbRef = ref;
+  window.dbSet = set;
+  window.dbOnValue = onValue;
+  window.dbGet = get;
+
+  // Real-time listener for site configuration from Firebase
+  const siteConfigRef = ref(db, 'tuitionData');
+  onValue(siteConfigRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      window.siteData = data;
+      renderSite();
+    } else {
+      saveDataToFirebase(window.DEFAULT_DATA);
+    }
+  });
+
+  // Real-time listener for registered users from Firebase
+  const usersRef = ref(db, 'tuitionUsers');
+  onValue(usersRef, (snapshot) => {
+    const data = snapshot.val();
+    window.registeredUsers = data ? Object.values(data) : [];
+  });
+</script>
+
 <script>
 const DEFAULT_DATA = {
   teacherName: "Araiz Ahmed",
@@ -498,7 +542,7 @@ const DEFAULT_DATA = {
   ]
 };
 
-let siteData = {};
+let siteData = JSON.parse(JSON.stringify(DEFAULT_DATA));
 let registeredUsers = [];
 let loggedUser = null;
 let tempProfilePic = null;
@@ -520,20 +564,6 @@ function showToast(message, isError = false) {
 }
 
 function loadData() {
-  const saved = localStorage.getItem('tuitionFullData_v6');
-  siteData = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_DATA));
-  
-  // Always enforce phone update to 03113787131 and remove email
-  siteData.phone = "03113787131";
-  delete siteData.email;
-
-  if(!siteData.admissionFormFields) {
-    siteData.admissionFormFields = JSON.parse(JSON.stringify(DEFAULT_DATA.admissionFormFields));
-  }
-
-  const savedUsers = localStorage.getItem('tuitionUsersList');
-  registeredUsers = savedUsers ? JSON.parse(savedUsers) : [];
-
   const activeUser = localStorage.getItem('activeTuitionUser');
   if(activeUser) { 
     loggedUser = JSON.parse(activeUser); 
@@ -541,12 +571,17 @@ function loadData() {
   }
 }
 
-function saveData() { 
-  try {
-    localStorage.setItem('tuitionFullData_v6', JSON.stringify(siteData)); 
-  } catch(e) {
-    showToast('Storage full! Trying further image optimization...', true);
+function saveDataToFirebase(data) {
+  if (window.firebaseDb && window.dbRef && window.dbSet) {
+    window.dbSet(window.dbRef(window.firebaseDb, 'tuitionData'), data)
+      .catch((err) => console.error("Firebase Sync Error:", err));
   }
+}
+
+function saveData() { 
+  siteData.phone = "03113787131";
+  delete siteData.email;
+  saveDataToFirebase(siteData);
 }
 
 function switchAuthMode(mode) {
@@ -575,14 +610,17 @@ document.getElementById('signupForm').addEventListener('submit', function(e){
   }
 
   const newUser = { name, id: userId, pass };
-  registeredUsers.push(newUser);
-  localStorage.setItem('tuitionUsersList', JSON.stringify(registeredUsers));
-
-  loggedUser = { name: newUser.name, id: newUser.id };
-  localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
-
-  showToast('Account created successfully!');
-  showMainApp();
+  
+  if (window.firebaseDb && window.dbRef && window.dbSet) {
+    window.dbSet(window.dbRef(window.firebaseDb, 'tuitionUsers/' + userId), newUser)
+      .then(() => {
+        loggedUser = { name: newUser.name, id: newUser.id };
+        localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
+        showToast('Account created successfully!');
+        showMainApp();
+      })
+      .catch((err) => showToast('Error signing up', true));
+  }
 });
 
 document.getElementById('loginForm').addEventListener('submit', function(e){
@@ -782,7 +820,7 @@ function toggleSelectAllSubjects(master) {
 
 function filterSubjects() {
   const query = document.getElementById('subjSearch').value.toLowerCase();
-  const filtered = siteData.subjects.filter(s => s.title.toLowerCase().includes(query) || s.desc.toLowerCase().includes(query));
+  const filtered = (siteData.subjects || []).filter(s => s.title.toLowerCase().includes(query) || s.desc.toLowerCase().includes(query));
   renderSubjectsList(filtered);
 }
 
@@ -807,9 +845,9 @@ document.getElementById('studentReviewForm').addEventListener('submit', function
   const author = document.getElementById('revAuthor').value;
   const content = document.getElementById('revContent').value;
   
+  if(!siteData.reviews) siteData.reviews = [];
   siteData.reviews.unshift({ text: content, name: author });
   saveData();
-  renderReviewsList();
   closeReviewModal();
   showToast('Review submitted successfully!');
 });
@@ -818,7 +856,7 @@ function openAdmissionModal() {
   renderDynamicAdmissionFields();
   
   if(loggedUser && loggedUser.name !== "Guest Student") {
-    const firstField = siteData.admissionFormFields[0];
+    const firstField = siteData.admissionFormFields ? siteData.admissionFormFields[0] : null;
     if (firstField && document.getElementById(`dyn_${firstField.id}`)) {
       document.getElementById(`dyn_${firstField.id}`).value = loggedUser.name;
     }
@@ -892,7 +930,7 @@ function handleProfilePicUpload(event) {
       const img = new Image();
       img.onload = function() {
         const canvas = document.createElement('canvas');
-        const maxDim = 200;
+        const maxDim = 180;
         let w = img.width;
         let h = img.height;
 
@@ -907,7 +945,7 @@ function handleProfilePicUpload(event) {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, w, h);
 
-        tempProfilePic = canvas.toDataURL('image/jpeg', 0.85);
+        tempProfilePic = canvas.toDataURL('image/jpeg', 0.8);
         updateAdminPreview(tempProfilePic, document.getElementById('in_initials').value);
         showToast('Image uploaded and optimized!');
       };
@@ -935,9 +973,9 @@ function fillAdminForm() {
   tempProfilePic = siteData.profilePic;
   updateAdminPreview(tempProfilePic, siteData.initials);
 
-  document.getElementById('in_statStudents').value = siteData.stats[0]?.num || "100+";
-  document.getElementById('in_statSuccess').value = siteData.stats[1]?.num || "95%";
-  document.getElementById('in_statExp').value = siteData.stats[2]?.num || "5+ Yrs";
+  document.getElementById('in_statStudents').value = siteData.stats ? siteData.stats[0]?.num : "100+";
+  document.getElementById('in_statSuccess').value = siteData.stats ? siteData.stats[1]?.num : "95%";
+  document.getElementById('in_statExp').value = siteData.stats ? siteData.stats[2]?.num : "5+ Yrs";
 
   document.getElementById('in_noticeShow').checked = siteData.noticeShow || false;
   document.getElementById('in_noticeText').value = siteData.noticeText || "";
@@ -1085,9 +1123,8 @@ function saveAllAdmin() {
     }
 
     saveData();
-    renderSite();
     closeAdmin();
-    showToast('Admin Changes Saved!');
+    showToast('Admin Changes Saved & Synced!');
   } catch (err) {
     console.error("Save Error:", err);
     showToast('Error saving changes.', true);
@@ -1095,14 +1132,6 @@ function saveAllAdmin() {
 }
 
 function escapeHtml(str) { return String(str).replace(/[&<>"']/g, ''); }
-
-window.addEventListener('storage', function(e) {
-  if (e.key === 'tuitionFullData_v6') {
-    siteData = JSON.parse(e.newValue);
-    renderSite();
-    showToast('Portal updated in real-time!');
-  }
-});
 
 /* BACKGROUND CANVAS ANIMATION */
 const canvas = document.getElementById('allSubjectsCanvas');
