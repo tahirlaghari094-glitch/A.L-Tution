@@ -451,42 +451,40 @@
     appId: "1:468398968574:web:19434d603c8043b98f9faf"
   };
 
-  try {
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-    window.firebaseDb = db;
-    window.dbRef = ref;
-    window.dbSet = set;
-    window.dbOnValue = onValue;
-    window.dbGet = get;
+  window.firebaseDb = db;
+  window.dbRef = ref;
+  window.dbSet = set;
+  window.dbOnValue = onValue;
+  window.dbGet = get;
 
-    const siteConfigRef = ref(db, 'tuitionData');
-    onValue(siteConfigRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        window.siteData = data;
-        renderSite();
-      } else {
-        saveDataToFirebase(window.DEFAULT_DATA);
-      }
-    }, (error) => {
-      console.warn("Firebase sync notice:", error);
-      const local = localStorage.getItem('tuitionDataLocal');
-      if (local) {
-        window.siteData = JSON.parse(local);
-        renderSite();
-      }
-    });
+  // Real-time listener for tuitionData (Live Sync for all devices)
+  const siteConfigRef = ref(db, 'tuitionData');
+  onValue(siteConfigRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      window.siteData = data;
+      renderSite();
+    } else {
+      saveDataToFirebase(window.DEFAULT_DATA);
+    }
+  }, (error) => {
+    console.warn("Firebase sync notice:", error);
+    const local = localStorage.getItem('tuitionDataLocal');
+    if (local) {
+      window.siteData = JSON.parse(local);
+      renderSite();
+    }
+  });
 
-    const usersRef = ref(db, 'tuitionUsers');
-    onValue(usersRef, (snapshot) => {
-      const data = snapshot.val();
-      window.registeredUsers = data ? Object.values(data) : [];
-    });
-  } catch(e) {
-    console.error("Firebase init failed:", e);
-  }
+  // Real-time listener for registered users
+  const usersRef = ref(db, 'tuitionUsers');
+  onValue(usersRef, (snapshot) => {
+    const data = snapshot.val();
+    window.registeredUsers = data ? Object.values(data) : [];
+  });
 </script>
 
 <script>
@@ -565,14 +563,13 @@ function saveDataToFirebase(data) {
   if (window.firebaseDb && window.dbRef && window.dbSet) {
     window.dbSet(window.dbRef(window.firebaseDb, 'tuitionData'), data)
       .catch((err) => {
-        console.warn("Firebase Write Restricted:", err);
+        console.warn("Firebase Write Error:", err);
       });
   }
 }
 
 function saveData() { 
   siteData.phone = "03113787131";
-  delete siteData.email;
   saveDataToFirebase(siteData);
 }
 
@@ -589,15 +586,16 @@ function switchAuthMode(mode) {
   }
 }
 
+// Signup Form with Real-time Database sync
 document.getElementById('signupForm').addEventListener('submit', function(e){
   e.preventDefault();
   const name = document.getElementById('signupName').value.trim();
-  const userId = document.getElementById('signupId').value.trim().toLowerCase();
+  const rawId = document.getElementById('signupId').value.trim();
+  const userId = rawId.replace(/[^0-9]/g, '');
   const pass = document.getElementById('signupPass').value;
 
-  const userExists = (window.registeredUsers || []).some(u => u.id === userId);
-  if(userExists) {
-    showToast('User already registered with this Phone Number!', true);
+  if(!userId) {
+    showToast('Please enter a valid phone number!', true);
     return;
   }
 
@@ -612,30 +610,25 @@ document.getElementById('signupForm').addEventListener('submit', function(e){
         showMainApp();
       })
       .catch((err) => {
-        loggedUser = { name: newUser.name, id: newUser.id };
-        localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
-        showToast('Account created locally!');
-        showMainApp();
+        console.error("Signup write error:", err);
+        showToast('Error saving account to server', true);
       });
-  } else {
-    loggedUser = { name: newUser.name, id: newUser.id };
-    localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
-    showToast('Account created locally!');
-    showMainApp();
   }
 });
 
+// Login Form check against Firebase Data
 document.getElementById('loginForm').addEventListener('submit', function(e){
   e.preventDefault();
-  const userId = document.getElementById('loginId').value.trim().toLowerCase();
+  const rawId = document.getElementById('loginId').value.trim();
+  const userId = rawId.replace(/[^0-9]/g, '');
   const pass = document.getElementById('loginPass').value;
 
-  const validUser = (window.registeredUsers || []).find(u => u.id === userId && u.pass === pass);
+  const validUser = (window.registeredUsers || []).find(u => String(u.id) === String(userId) && String(u.pass) === String(pass));
   
   if(validUser || userId === "03113787131") {
     loggedUser = { name: validUser ? validUser.name : "Student", id: userId };
     localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
-    showToast(`Welcome back!`);
+    showToast('Welcome back!');
     showMainApp();
   } else {
     showToast('Invalid Phone Number or Password!', true);
@@ -1126,7 +1119,7 @@ function saveAllAdmin() {
 
     saveData();
     closeAdmin();
-    showToast('Admin Changes Saved & Synced!');
+    showToast('Admin Changes Saved & Synced Live!');
   } catch (err) {
     console.error("Save Error:", err);
     showToast('Error saving changes.', true);
