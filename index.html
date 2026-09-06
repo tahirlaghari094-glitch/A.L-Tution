@@ -178,8 +178,12 @@
 
 <!-- 0. LOADING SCREEN (shown until Firebase gives us real data) -->
 <div id="loadingScreen">
-  <div class="spinner"></div>
-  <p style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Connecting to server...</p>
+  <div class="spinner" id="loadingSpinner"></div>
+  <p style="font-size:0.85rem; color:var(--text-muted); font-weight:600;" id="loadingText">Connecting to server...</p>
+  <div id="loadingErrorBox" style="display:none; max-width:340px; text-align:center; padding: 0 16px;">
+    <p style="font-size:0.8rem; color:var(--danger); font-weight:600; margin-bottom:8px;" id="loadingErrorMsg"></p>
+    <button class="btn-primary" style="width:auto; padding:10px 18px; font-size:0.82rem;" onclick="location.reload()">🔄 Retry</button>
+  </div>
 </div>
 
 <!-- 1. AUTH SCREEN -->
@@ -489,12 +493,26 @@
 
   let firstDataReceived = false;
   let firstUsersReceived = false;
+  let readyFired = false;
 
   function markReadyIfBothLoaded() {
+    if (readyFired) return;
     if (firstDataReceived && firstUsersReceived && typeof window.onFirebaseReady === 'function') {
+      readyFired = true;
+      if (typeof window.clearConnectTimeout === 'function') window.clearConnectTimeout();
       window.onFirebaseReady();
     }
   }
+
+  // If Firebase never responds within 8 seconds (wrong databaseURL, no
+  // internet, database not created, blocked rules, etc.) show a clear
+  // error instead of hanging on the spinner forever.
+  const connectTimeoutId = setTimeout(() => {
+    if (!readyFired && typeof window.showConnectError === 'function') {
+      window.showConnectError('Server did not respond. Double-check your Firebase databaseURL and Rules, or your internet connection.');
+    }
+  }, 8000);
+  window.clearConnectTimeout = () => clearTimeout(connectTimeoutId);
 
   // Real-time listener for tuitionData — this fires immediately on connect,
   // and again every single time ANY device writes a change. That's the
@@ -518,6 +536,9 @@
   }, (error) => {
     console.warn("Firebase sync notice:", error);
     if (typeof window.setSyncStatus === 'function') window.setSyncStatus(false);
+    if (typeof window.showConnectError === 'function') {
+      window.showConnectError('Firebase error: ' + (error && error.message ? error.message : error) + ' — check your databaseURL and Rules.');
+    }
     const local = localStorage.getItem('tuitionDataLocal');
     if (local && !firstDataReceived) {
       window.siteData = JSON.parse(local);
@@ -536,6 +557,9 @@
     markReadyIfBothLoaded();
   }, (error) => {
     console.warn("Users sync notice:", error);
+    if (typeof window.showConnectError === 'function') {
+      window.showConnectError('Firebase error: ' + (error && error.message ? error.message : error) + ' — check your databaseURL and Rules.');
+    }
     firstUsersReceived = true;
     markReadyIfBothLoaded();
   });
@@ -621,6 +645,17 @@ function setSyncStatus(isOnline) {
   }
 }
 window.setSyncStatus = setSyncStatus;
+
+window.showConnectError = function(message) {
+  const spinner = document.getElementById('loadingSpinner');
+  const text = document.getElementById('loadingText');
+  const box = document.getElementById('loadingErrorBox');
+  const msgEl = document.getElementById('loadingErrorMsg');
+  if (spinner) spinner.style.display = 'none';
+  if (text) text.textContent = 'Could not connect';
+  if (box) box.style.display = 'block';
+  if (msgEl) msgEl.textContent = message;
+};
 
 // This runs ONCE, only after Firebase has actually delivered real data
 // (or genuinely failed and we fell back to local cache). This is what
