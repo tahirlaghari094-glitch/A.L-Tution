@@ -460,22 +460,24 @@
   window.dbOnValue = onValue;
   window.dbGet = get;
 
-  // Real-time listener for tuitionData (Live Sync for all devices)
+  // Real-time listener for tuitionData
   const siteConfigRef = ref(db, 'tuitionData');
   onValue(siteConfigRef, (snapshot) => {
     const data = snapshot.val();
     if (data) {
       window.siteData = data;
-      renderSite();
+      if (typeof window.renderSite === 'function') window.renderSite();
     } else {
-      saveDataToFirebase(window.DEFAULT_DATA);
+      if (typeof window.saveDataToFirebase === 'function') {
+        window.saveDataToFirebase(window.DEFAULT_DATA);
+      }
     }
   }, (error) => {
     console.warn("Firebase sync notice:", error);
     const local = localStorage.getItem('tuitionDataLocal');
     if (local) {
       window.siteData = JSON.parse(local);
-      renderSite();
+      if (typeof window.renderSite === 'function') window.renderSite();
     }
   });
 
@@ -567,9 +569,9 @@ function saveDataToFirebase(data) {
       });
   }
 }
+window.saveDataToFirebase = saveDataToFirebase;
 
 function saveData() { 
-  siteData.phone = "03113787131";
   saveDataToFirebase(siteData);
 }
 
@@ -586,7 +588,6 @@ function switchAuthMode(mode) {
   }
 }
 
-// Signup Form with Real-time Database sync
 document.getElementById('signupForm').addEventListener('submit', function(e){
   e.preventDefault();
   const name = document.getElementById('signupName').value.trim();
@@ -616,7 +617,6 @@ document.getElementById('signupForm').addEventListener('submit', function(e){
   }
 });
 
-// Login Form check against Firebase Data
 document.getElementById('loginForm').addEventListener('submit', function(e){
   e.preventDefault();
   const rawId = document.getElementById('loginId').value.trim();
@@ -625,7 +625,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e){
 
   const validUser = (window.registeredUsers || []).find(u => String(u.id) === String(userId) && String(u.pass) === String(pass));
   
-  if(validUser || userId === "03113787131") {
+  if(validUser || userId === siteData.phone.replace(/[^0-9]/g, '')) {
     loggedUser = { name: validUser ? validUser.name : "Student", id: userId };
     localStorage.setItem('activeTuitionUser', JSON.stringify(loggedUser));
     showToast('Welcome back!');
@@ -731,8 +731,11 @@ function renderSite() {
     </div>
   `).join('');
 
-  const cPhone = siteData.phone ? siteData.phone.replace(/[^0-9]/g, '').replace(/^0/, '') : '3113787131';
-  document.getElementById('linkWA').href = `https://wa.me/92${cPhone}`;
+  let cPhone = siteData.phone ? siteData.phone.replace(/[^0-9]/g, '') : '03113787131';
+  if (cPhone.startsWith('0')) {
+    cPhone = '92' + cPhone.substring(1);
+  }
+  document.getElementById('linkWA').href = `https://wa.me/${cPhone}`;
   document.getElementById('linkCall').href = `tel:${siteData.phone}`;
 
   renderSubjectsList(siteData.subjects || []);
@@ -740,6 +743,7 @@ function renderSite() {
   renderDynamicAdmissionFields();
   renderAdmissionSubjectsCheckboxes();
 }
+window.renderSite = renderSite;
 
 function renderSubjectsList(list) {
   const subjGrid = document.getElementById('subjectsGrid');
@@ -796,7 +800,7 @@ function renderAdmissionSubjectsCheckboxes() {
     <hr style="border: 0; border-top: 1px solid var(--line); margin: 4px 0;">
   `;
 
-  (siteData.subjects || []).forEach((s, idx) => {
+  (siteData.subjects || []).forEach((s) => {
     html += `
       <label class="checkbox-item">
         <input type="checkbox" class="adm-subj-chk" value="${escapeHtml(s.title)}">
@@ -896,8 +900,11 @@ document.getElementById('admissionForm').addEventListener('submit', function(e) 
   msgLines.push(`📖 *Subjects Required:* ${selectedSubjects.join(', ')}`);
 
   const msg = encodeURIComponent(msgLines.join('\n'));
-  const cPhone = siteData.phone.replace(/[^0-9]/g, '').replace(/^0/, '');
-  window.open(`https://wa.me/92${cPhone}?text=${msg}`, '_blank');
+  let cPhone = siteData.phone ? siteData.phone.replace(/[^0-9]/g, '') : '03113787131';
+  if (cPhone.startsWith('0')) {
+    cPhone = '92' + cPhone.substring(1);
+  }
+  window.open(`https://wa.me/${cPhone}?text=${msg}`, '_blank');
   closeAdmissionModal();
   showToast('Connecting to WhatsApp...');
 });
@@ -1089,11 +1096,16 @@ function saveAllAdmin() {
 
     if (siteData.admissionFormFields) {
       siteData.admissionFormFields = siteData.admissionFormFields.map((f, i) => {
-        const lbl = document.getElementById(`adm_field_label_${i}`).value;
-        const typ = document.getElementById(`adm_field_type_${i}`).value;
-        const req = document.getElementById(`adm_field_req_${i}`).checked;
-        const optsRaw = document.getElementById(`adm_field_opts_${i}`) ? document.getElementById(`adm_field_opts_${i}`).value : '';
-        const opts = optsRaw ? optsRaw.split(',').map(o => o.trim()).filter(Boolean) : [];
+        const lblEl = document.getElementById(`adm_field_label_${i}`);
+        const typEl = document.getElementById(`adm_field_type_${i}`);
+        const reqEl = document.getElementById(`adm_field_req_${i}`);
+        const optsEl = document.getElementById(`adm_field_opts_${i}`);
+
+        const lbl = lblEl ? lblEl.value : f.label;
+        const typ = typEl ? typEl.value : f.type;
+        const req = reqEl ? reqEl.checked : f.required;
+        const optsRaw = optsEl ? optsEl.value : '';
+        const opts = optsRaw ? optsRaw.split(',').map(o => o.trim()).filter(Boolean) : (f.options || []);
 
         return {
           id: f.id || ("field_" + i),
